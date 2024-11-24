@@ -9,15 +9,6 @@ void Paciente::modificarDatos(const std::string& nuevoNombre, const std::string&
     fechaIngreso = nuevaFechaIngreso;
 }
 
-void Paciente::eliminarPaciente() const {
-    std::cout << "Paciente eliminado." << std::endl;
-}
-
-void Paciente::agregarPaciente(Paciente& paciente) {
-    // Lógica para agregar paciente (esto es solo un placeholder)
-    std::cout << "Paciente agregado: " << paciente.nombre << std::endl;
-}
-
 void Paciente::consultarPaciente(const Paciente& paciente) {
     paciente.mostrarInformacion();
 }
