@@ -8,12 +8,12 @@ void Cita::consultarCita(const Cita& cita) {
     cita.mostrarInformacion();
 }
 
-void Cita::programarCita(std::vector<Cita> citas, Cita cita)
+void Cita::programarCita(std::vector<Cita>& citas, Cita cita)
 {
     citas.push_back(cita);
 }
 
-void Cita::cancelarCita(std::vector<Cita> citas, int idCita)
+void Cita::cancelarCita(std::vector<Cita>& citas, int idCita)
 {
     for (auto it = citas.begin(); it != citas.end(); ++it) {
         if (it->getId() == idCita) {

@@ -1,6 +1,6 @@
 #include "Paciente.h"
 
-Paciente::Paciente(static std::string nombre, int id, std::string fechaIngreso, HistorialClinico historial)
+Paciente::Paciente(static std::string nombre, int id, std::string fechaIngreso, std::vector<HistorialClinico> historial)
     : nombre(nombre), id(id), fechaIngreso(fechaIngreso), historial(historial) {
 }
 
@@ -13,7 +13,7 @@ void Paciente::agregarPaciente(std::vector<Paciente> pacientes, Paciente pacient
     pacientes.push_back(paciente);
 }
 
-void Paciente::eliminarPaciente(std::vector<Paciente> pacientes, int idPaciente)
+void Paciente::eliminarPaciente(std::vector<Paciente>& pacientes, int idPaciente)
 {
     for (auto it = pacientes.begin(); it != pacientes.end(); ++it) {
         if (it->getId() == idPaciente) {
@@ -38,9 +38,17 @@ void Paciente::consultarPaciente(std::vector<Paciente> pacientes, int idPaciente
     std::cout << "Paciente con ID " << idPaciente << " no encontrado." << std::endl;
 }
 
+void Paciente::agregarRegistroHistorial( std::string& diagnostico, std::string& tratamiento)
+{
+    HistorialClinico registro(diagnostico, tratamiento);
+    historial.push_back(registro);
+}
+
+
 void Paciente::mostrarInformacion() const {
     std::cout << "Nombre: " << nombre << std::endl;
     std::cout << "ID: " << id << std::endl;
     std::cout << "Fecha de Ingreso: " << fechaIngreso << std::endl;
-    historial.mostrarHistorial();
+    for (int i = 0; i < historial.size(); i++)
+        std::cout << historial[i].mostrarInformacion() << " ";
 }

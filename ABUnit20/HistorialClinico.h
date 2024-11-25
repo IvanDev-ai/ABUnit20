@@ -4,16 +4,17 @@
 #include <iostream>
 #include <map>
 #include <string>
-
+#include <sstream>
 class HistorialClinico {
 
 private:
-    std::map<std::string, std::string> registros;
+    std::string diagnostico;
+    std::string tratamiento;
+
 
 public:
-    HistorialClinico();
-    void agregarRegistro(std::string diagnostico, std::string tratamiento);
-    void mostrarHistorial() const;
+    HistorialClinico(std::string diagnostico,std::string tratamiento);
+    std::string mostrarInformacion() const;
 };
 
 #endif 

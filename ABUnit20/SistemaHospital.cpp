@@ -5,11 +5,13 @@ SistemaHospital::SistemaHospital() {
 }
 
 void SistemaHospital::crearBaseDeDatos() {
-    HistorialClinico historial1;
-    historial1.agregarRegistro("Resfriado", "Descanso y liquidos");
+    HistorialClinico registro1("Resfriado", "Descanso y liquidos");
+    HistorialClinico registro2("Gripe", "Antivirales");
+    std::vector<HistorialClinico> historial1;
+    std::vector<HistorialClinico> historial2;
+    historial1.push_back(registro1);
+    historial2.push_back(registro2);
 
-    HistorialClinico historial2;
-    historial2.agregarRegistro("Gripe", "Antivirales");
 
     Paciente paciente1("Ana Garcia", 1001, "2024-11-20", historial1);
     Paciente paciente2("Carlos Lopez", 1002, "2024-11-21", historial2);
@@ -40,7 +42,7 @@ void SistemaHospital::crearMenu() {
         std::cout << "3. Gestion del Hospital" << std::endl;
         std::cout << "4. Salir" << std::endl;
 
-        std::cout << "Seleccione una opción: ";
+        std::cout << "Seleccione una opcion: ";
         std::cin >> opcion;
 
         switch (opcion) {
@@ -106,11 +108,12 @@ void SistemaHospital::crearMenu() {
             std::cout << "1. Gestion de Pacientes" << std::endl;
             std::cout << "2. Gestion de Medicos" << std::endl;
             std::cout << "3. Gestion de Citas" << std::endl;
+            std::cout << "4. Gestion de Reportes" << std::endl;
             std::cout << "Seleccione una opcion: ";
             std::cin >> opcionMedico;
 
             switch (opcionMedico) {
-            case 1: {  // Gestion de Pacientes
+            case 1: { 
                 int opcionPaciente;
                 std::cout << "\n--- GESTION DE PACIENTES ---" << std::endl;
                 std::cout << "1. Agregar paciente" << std::endl;
@@ -132,7 +135,7 @@ void SistemaHospital::crearMenu() {
                     std::cin.ignore();
                     std::cout << "Ingrese fecha de ingreso (YYYY-MM-DD): ";
                     std::getline(std::cin, fechaIngreso);
-                    HistorialClinico historial;
+                    std::vector<HistorialClinico> historial;
                     Paciente nuevoPaciente(nombre, id, fechaIngreso, historial);
                     Paciente::agregarPaciente(pacientes, nuevoPaciente);
                     pacientes.push_back(nuevoPaciente);
@@ -168,7 +171,7 @@ void SistemaHospital::crearMenu() {
                         std::getline(std::cin, diagnostico);
                         std::cout << "Ingrese tratamiento: ";
                         std::getline(std::cin, tratamiento);
-                        paciente->getHistorial().agregarRegistro(diagnostico, tratamiento); 
+                        paciente->agregarRegistroHistorial(diagnostico, tratamiento);
                         std::cout << "Registro agregado correctamente." << std::endl;
                     }
                     else {
@@ -182,7 +185,7 @@ void SistemaHospital::crearMenu() {
                 }
                 break;
             }
-            case 2: {  // Gestion de Medicos
+            case 2: {
                 int opcionMedico;
                 std::cout << "\n--- GESTION DE MEDICOS ---" << std::endl;
                 std::cout << "1. Asignar especialidad de medico" << std::endl;
@@ -245,7 +248,7 @@ void SistemaHospital::crearMenu() {
                 }
                 break;
             }
-            case 3: {  // Gestion de Citas
+            case 3: {
                 int opcionCita;
                 std::cout << "\n--- GESTION DE CITAS ---" << std::endl;
                 std::cout << "1. Programar cita" << std::endl;
@@ -308,6 +311,34 @@ void SistemaHospital::crearMenu() {
                 }
                 break;
             }
+            case 4: {
+                int opcionReporte;
+                std::cout << "\n--- GESTION DE REPORTES ---" << std::endl;
+                std::cout << "1. Generar Reporte" << std::endl;
+                std::cout << "Seleccione una opcion: ";
+                std::cin >> opcionReporte;
+
+                switch (opcionReporte) {
+                case 1: {
+                    int idReporte;
+                    std::string titulo, contenido;
+                    std::cout << "Ingrese ID del reporte: ";
+                    std::cin >> idReporte;
+                    std::cin.ignore();
+                    std::cout << "Ingrese titulo del reporte: ";
+                    std::getline(std::cin, titulo);
+                    std::cout << "Ingrese contenido del reporte: ";
+                    std::getline(std::cin, contenido);
+                    Reporte nuevoReporte(idReporte, titulo, contenido);
+                    Reporte::generarReportes(reportes, nuevoReporte);
+                    break;
+                }
+                default:
+                    std::cout << "Opcion no valida. Intente de nuevo." << std::endl;
+                    break;
+                }
+                break;
+            }
             default:
                 std::cout << "Opcion no valida. Intente de nuevo." << std::endl;
                 break;
@@ -316,15 +347,45 @@ void SistemaHospital::crearMenu() {
         }
 
         case 3: {
-            int idReporte;
-            std::cout << "Ingrese ID del reporte: ";
-            std::cin >> idReporte;
-            Reporte::consultarReportes(reportes, idReporte);
+            int opcionGestion;
+            std::cout << "\n--- GESTION DE HOSPITAL ---" << std::endl;
+            std::cout << "1. Generar Reporte" << std::endl;
+            std::cout << "2. Consultar Reporte" << std::endl;
+            std::cout << "Seleccione una opcion: ";
+            std::cin >> opcionGestion;
+            switch (opcionGestion) {
+            case 1: {
+                int idReporte;
+                std::string titulo, contenido;
+                std::cout << "Ingrese ID del reporte: ";
+                std::cin >> idReporte;
+                std::cin.ignore();
+                std::cout << "Ingrese titulo del reporte: ";
+                std::getline(std::cin, titulo);
+                std::cout << "Ingrese contenido del reporte: ";
+                std::getline(std::cin, contenido);
+                Reporte nuevoReporte(idReporte, titulo, contenido);
+                Reporte::generarReportes(reportes, nuevoReporte);
+                break;
+            }
+            case 2: {
+                int idReporte;
+                std::cout << "Ingrese ID del reporte: ";
+                std::cin >> idReporte;
+                Reporte::consultarReportes(reportes, idReporte);
+                break;
+            }
+            default:
+                std::cout << "Opcion no valida. Intente de nuevo." << std::endl;
+                break;
+            }
             break;
         }
-        case 4:
+        case 4: {
             std::cout << "Saliendo del programa..." << std::endl;
             break;
+            }
+            
         default:
             std::cout << "Opcion no valida. Intente de nuevo." << std::endl;
             break;

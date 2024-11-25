@@ -18,7 +18,7 @@ public:
         return id;
     }
     // Metodos
-    static void generarReportes(std::vector<Reporte> reportes, Reporte reporte);
+    static void generarReportes(std::vector<Reporte>& reportes, Reporte reporte);
     static void consultarReportes(std::vector<Reporte> reportes, int idReporte);
     void mostrarInformacion() const;
 };

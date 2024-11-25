@@ -4,7 +4,7 @@ Reporte::Reporte(int id, std::string titulo, std::string contenido)
     : id(id), titulo(titulo), contenido(contenido){
 }
 
-void Reporte::generarReportes(std::vector<Reporte> reportes, Reporte reporte)
+void Reporte::generarReportes(std::vector<Reporte>& reportes, Reporte reporte)
 {
     reportes.push_back(reporte);
     std::cout << "Reporte generado correctamente." << std::endl;
