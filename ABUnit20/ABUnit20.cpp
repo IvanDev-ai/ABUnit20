@@ -5,6 +5,7 @@
 #include "Paciente.h"
 #include "HistorialClinico.h"
 #include "Medico.h"
+#include "Cita.h"
 using namespace std;
 
 int main()
@@ -32,5 +33,12 @@ int main()
     vector<Medico> medicos = { medico1, medico2, medico3 };
 
     Medico::consultarMedico(medico1);
+
+    Cita cita1(paciente1, medico1, "2023-11-26 10:00", "Urgente");
+    Cita cita2(paciente2, medico2, "2023-11-27 15:00", "Normal");
+    vector<Cita> citas = { cita1, cita2};
+
+    Cita::consultarCita(cita1);
+
 	return 0;
 }
