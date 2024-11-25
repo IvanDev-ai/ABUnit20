@@ -8,37 +8,23 @@
 #include "Medico.h"
 #include "Cita.h"
 #include "HistorialClinico.h"
-
+#include "Reporte.h"
 class SistemaHospital {
 private:
     std::vector<Paciente> pacientes;
     std::vector<Medico> medicos;
     std::vector<Cita> citas;
-
+    std::vector<Reporte> reportes;
 public:
     SistemaHospital();
 
     // Métodos 
+
+    //void guardarDatosEnArchivo();
+    //void realizarCopiaBBDD();
     void crearBaseDeDatos();
     void crearMenu();
     void ejecutarSistema();
-
-    void agregarPaciente();
-    void eliminarPaciente();
-    void consultarPaciente();
-
-    void listarMedicosPorEspecialidad();
-    void consultarMedico();
-
-    void programarCita();
-    void cancelarCita();
-    void modificarCita();
-    void consultarCita();
-
-    void generarReportes();
-    void consultarReportes();
-    void guardarDatosEnArchivo();
-    void realizarCopiaBBDD();
 
 };
 
