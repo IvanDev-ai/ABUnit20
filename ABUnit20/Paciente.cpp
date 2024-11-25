@@ -9,9 +9,6 @@ void Paciente::modificarDatos(const std::string& nuevoNombre, const std::string&
     fechaIngreso = nuevaFechaIngreso;
 }
 
-void Paciente::consultarPaciente(const Paciente& paciente) {
-    paciente.mostrarInformacion();
-}
 
 void Paciente::mostrarInformacion() const {
     std::cout << "Nombre: " << nombre << std::endl;

@@ -13,9 +13,6 @@ void Medico::cambiarDisponibilidad(bool nuevaDisponibilidad) {
 }
 
 
-void Medico::consultarMedico(const Medico& medico) {
-    medico.mostrarInformacion();
-}
 
 void Medico::mostrarInformacion() const {
     std::cout << "Nombre: " << nombre << std::endl;

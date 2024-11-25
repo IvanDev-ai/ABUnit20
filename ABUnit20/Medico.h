@@ -16,12 +16,10 @@ public:
     // Constructor
     Medico(std::string nombre, int id, std::string especialidad, bool disponibilidad);
 
-    // Métodos
+    // Metodos
     void asignarEspecialidad(const std::string& nuevaEspecialidad);
     void cambiarDisponibilidad(bool nuevaDisponibilidad);
-    static void listarMedicosPorEspecialidad(const std::vector<Medico>& medicos, const std::string& especialidad);
-    static void consultarMedico(const Medico& medico);
     void mostrarInformacion() const;
 };
 
-#endif // MEDICO_H
+#endif 
