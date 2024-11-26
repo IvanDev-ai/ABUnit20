@@ -138,7 +138,6 @@ void SistemaHospital::crearMenu() {
                     std::vector<HistorialClinico> historial;
                     Paciente nuevoPaciente(nombre, id, fechaIngreso, historial);
                     Paciente::agregarPaciente(pacientes, nuevoPaciente);
-                    pacientes.push_back(nuevoPaciente);
                     break;
                 }
                 case 2: {

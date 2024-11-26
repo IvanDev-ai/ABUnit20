@@ -21,8 +21,8 @@ public:
     std::vector<HistorialClinico> getHistorial() const {
         return historial;
     }
-     void modificarDatos(const std::string& nuevoNombre, const std::string& nuevaFechaIngreso);
-    static void agregarPaciente(std::vector<Paciente> pacientes, Paciente paciente);
+    void modificarDatos(const std::string& nuevoNombre, const std::string& nuevaFechaIngreso);
+    static void agregarPaciente(std::vector<Paciente>& pacientes, Paciente paciente);
     static void eliminarPaciente(std::vector<Paciente>& pacientes, int idPaciente);
     static void consultarPaciente(std::vector<Paciente> pacientes, int idPaciente);
     void agregarRegistroHistorial(std::string& diagnostico, std::string& tratamiento);

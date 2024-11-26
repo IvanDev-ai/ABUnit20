@@ -20,7 +20,6 @@ public:
         return id;
     }
 
-    static void consultarCita(const Cita& cita);
     static void programarCita(std::vector<Cita>& citas, Cita cita);
     static void cancelarCita(std::vector<Cita>& citas, int idCita);
     static void modificarCita(std::vector<Cita>& citas, int idCita, std::vector<Paciente>& pacientes, std::vector<Medico>& medicos);

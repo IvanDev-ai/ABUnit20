@@ -13,7 +13,6 @@ private:
     bool disponibilidad;
 
 public:
-    // Constructor
     Medico(std::string nombre, int id, std::string especialidad, bool disponibilidad);
     std::string getEspecialidad() const {
         return especialidad;
@@ -21,7 +20,6 @@ public:
     int getId() const {
         return id;
     }
-    // Metodos
     void asignarEspecialidad(const std::string& nuevaEspecialidad);
     void cambiarDisponibilidad(bool nuevaDisponibilidad);
     static void listarMedicosPorEspecialidad(std::vector<Medico> medicos, std::string especialidad);

@@ -1,6 +1,6 @@
 #include "Paciente.h"
 
-Paciente::Paciente(static std::string nombre, int id, std::string fechaIngreso, std::vector<HistorialClinico> historial)
+Paciente::Paciente( std::string nombre, int id, std::string fechaIngreso, std::vector<HistorialClinico> historial)
     : nombre(nombre), id(id), fechaIngreso(fechaIngreso), historial(historial) {
 }
 
@@ -9,7 +9,7 @@ void Paciente::modificarDatos(const std::string& nuevoNombre, const std::string&
     fechaIngreso = nuevaFechaIngreso;
 }
 
-void Paciente::agregarPaciente(std::vector<Paciente> pacientes, Paciente paciente) {
+void Paciente::agregarPaciente(std::vector<Paciente>& pacientes, Paciente paciente) {
     pacientes.push_back(paciente);
 }
 

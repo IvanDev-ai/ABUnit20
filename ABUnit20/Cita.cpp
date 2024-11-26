@@ -4,9 +4,6 @@ Cita::Cita(int id, Paciente paciente, Medico medico, const std::string& fecha, c
     : id(id),paciente(paciente), medico(medico), fecha(fecha), prioridad(prioridad) {
 }
 
-void Cita::consultarCita(const Cita& cita) {
-    cita.mostrarInformacion();
-}
 
 void Cita::programarCita(std::vector<Cita>& citas, Cita cita)
 {
