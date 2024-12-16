@@ -1,0 +1,8 @@
+MedicoID,Nombre,Especialidad,Disponibilidad
+101,Dr. Juan Perez,Cardiologia,true
+102,Dra. Ana Gomez,Pediatria,false
+103,Dr. Carlos Sanchez,Traumatologia,true
+104,Dra. Maria Ruiz,Neurologia,true
+105,Dr. Jose Fernandez,Oncologia,false
+
+

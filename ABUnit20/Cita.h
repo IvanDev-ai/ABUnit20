@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <string>
+#include <algorithm>
 #include "Paciente.h"
 #include "Medico.h"
 class Cita {
