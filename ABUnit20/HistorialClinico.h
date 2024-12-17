@@ -13,7 +13,13 @@ private:
 
 
 public:
-    HistorialClinico(std::string diagnostico,std::string tratamiento);
+    HistorialClinico(std::string diagnostico, std::string tratamiento);
+    std::string getDiagnostico() const {
+        return diagnostico;
+    }
+    std::string getTratamiento() const {
+        return tratamiento;
+    }
     std::string mostrarInformacion() const;
 };
 

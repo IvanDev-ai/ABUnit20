@@ -20,6 +20,12 @@ public:
     int getId() const {
         return id;
     }
+    std::string getNombre() const {
+        return nombre;
+    }
+    bool getDisponibilidad() const {
+        return disponibilidad;
+    }
     void asignarEspecialidad(const std::string& nuevaEspecialidad);
     void cambiarDisponibilidad(bool nuevaDisponibilidad);
     static void listarMedicosPorEspecialidad(std::vector<Medico> medicos, std::string especialidad);

@@ -12,7 +12,6 @@ void SistemaHospital::crearBaseDeDatos() {
     historial1.push_back(registro1);
     historial2.push_back(registro2);
 
-
     Paciente paciente1("Ana Garcia", 1001, "2024-11-20", historial1);
     Paciente paciente2("Carlos Lopez", 1002, "2024-11-21", historial2);
     Paciente paciente3("Elena Martinez", 1003, "2024-11-22", historial1);
@@ -30,6 +29,45 @@ void SistemaHospital::crearBaseDeDatos() {
     Reporte reporte1(1, "Reporte A", "Contenido del Reporte A");
     Reporte reporte2(2, "Reporte B", "Contenido del Reporte B");
     reportes = { reporte1, reporte2 };
+
+    // Crear archivos CSV y escribir los datos correspondientes
+
+    // Archivo CSV para Pacientes
+    std::ofstream archivoPacientes("pacientes.csv");
+    archivoPacientes << "Nombre,ID,FechaIngreso,HistorialClinico\n";
+    for (const auto& paciente : pacientes) {
+        archivoPacientes << paciente.getNombre() << ","
+            << paciente.getId() << ","
+            << paciente.getfechaIngreso() << ",";
+        for (const auto& historial : paciente.getHistorial()) {
+            archivoPacientes << historial.getDiagnostico() << ": " << historial.getTratamiento() << "; ";
+        }
+        archivoPacientes << "\n";
+    }
+    archivoPacientes.close();
+
+    // Archivo CSV para Medicos
+    std::ofstream archivoMedicos("medicos.csv");
+    archivoMedicos << "Nombre,ID,Especialidad,Disponible\n";
+    for (const auto& medico : medicos) {
+        archivoMedicos << medico.getNombre() << ","
+            << medico.getId() << ","
+            << medico.getEspecialidad() << ","
+            << (medico.getDisponibilidad() ? "Si" : "No") << "\n";
+    }
+    archivoMedicos.close();
+
+    // Archivo CSV para Citas
+    std::ofstream archivoCitas("citas.csv");
+    archivoCitas << "ID,Paciente,Medico,FechaHora,Prioridad\n";
+    for (const auto& cita : citas) {
+        archivoCitas << cita.getId() << ","
+            << cita.getPaciente().getNombre() << ","
+            << cita.getMedico().getNombre() << ","
+            << cita.getFecha() << ","
+            << cita.getPrioridad() << "\n";
+    }
+    archivoCitas.close();
 }
 
 void SistemaHospital::crearMenu() {

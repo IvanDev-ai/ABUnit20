@@ -8,15 +8,21 @@
 
 class Paciente {
 private:
-     std::string nombre;
-     int id;
-     std::string fechaIngreso;
-     std::vector<HistorialClinico> historial;
+    std::string nombre;
+    int id;
+    std::string fechaIngreso;
+    std::vector<HistorialClinico> historial;
 public:
     Paciente(std::string nombre, int id, std::string fechaIngreso, std::vector<HistorialClinico> historial);
 
     int getId() const {
         return id;
+    }
+    std::string getNombre() const {
+        return nombre;
+    }
+    std::string getfechaIngreso() const {
+        return fechaIngreso;
     }
     std::vector<HistorialClinico> getHistorial() const {
         return historial;

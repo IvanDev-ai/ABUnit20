@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <fstream>
 #include "Paciente.h"
 #include "Medico.h"
 #include "Cita.h"
