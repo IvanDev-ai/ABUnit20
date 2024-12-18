@@ -28,7 +28,6 @@ void SistemaHospital::crearBaseDeDatos() {
     Reporte reporte2(2, "Reporte B", "Contenido del Reporte B");
     reportes = { reporte1, reporte2 };
 
-    
     // Archivo CSV para Pacientes
     std::ofstream archivoPacientes("pacientes.csv");
     archivoPacientes << "Nombre,ID,FechaIngreso,HistorialClinico\n";
@@ -45,10 +44,10 @@ void SistemaHospital::crearBaseDeDatos() {
 
     // Archivo CSV para Medicos
     std::ofstream archivoMedicos("medicos.csv");
-    archivoMedicos << "Nombre,ID,Especialidad,Disponible\n";
+    archivoMedicos << "ID,Nombre,Especialidad,Disponible\n";
     for (const auto& medico : medicos) {
-        archivoMedicos << medico.getNombre() << ","
-            << medico.getId() << ","
+        archivoMedicos << medico.getId() << ","
+            << medico.getNombre() << ","
             << medico.getEspecialidad() << ","
             << (medico.getDisponibilidad() ? "Si" : "No") << "\n";
     }
@@ -122,7 +121,7 @@ void SistemaHospital::crearMenu() {
                 int idMedico;
                 std::cout << "Ingrese ID de tu medico: ";
                 std::cin >> idMedico;
-                Medico::consultarMedico(medicos, idMedico);
+                Medico::consultarMedico(idMedico);
                 break;
             }
             case 4: {
@@ -240,7 +239,7 @@ void SistemaHospital::crearMenu() {
                     std::getline(std::cin, especialidad);
                     for (auto& medico : medicos) {
                         if (medico.getId() == idMedico) {
-                            medico.asignarEspecialidad(especialidad);
+                            medico.asignarEspecialidad(idMedico, especialidad);
                             break;
                         }
                     }
@@ -255,7 +254,7 @@ void SistemaHospital::crearMenu() {
                     std::cin >> disponibilidad;
                     for (auto& medico : medicos) {
                         if (medico.getId() == idMedico) {
-                            medico.cambiarDisponibilidad(disponibilidad);
+                            medico.cambiarDisponibilidad(idMedico, disponibilidad);
                             break;
                         }
                     }
@@ -265,7 +264,7 @@ void SistemaHospital::crearMenu() {
                     int idMedico;
                     std::cout << "Ingrese ID del medico: ";
                     std::cin >> idMedico;
-                    Medico::consultarMedico(medicos, idMedico);
+                    Medico::consultarMedico(idMedico);
                     break;
                 }
                 case 4: {
@@ -273,7 +272,7 @@ void SistemaHospital::crearMenu() {
                     std::cout << "Ingrese especialidad: ";
                     std::cin.ignore();
                     std::getline(std::cin, especialidad);
-                    Medico::listarMedicosPorEspecialidad(medicos, especialidad);
+                    Medico::listarMedicosPorEspecialidad(especialidad);
                     break;
                 }
                 default:
