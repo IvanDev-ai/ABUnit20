@@ -1,9 +1,7 @@
 #include "SistemaHospital.h"
-
 SistemaHospital::SistemaHospital() {
     crearBaseDeDatos();
 }
-
 void SistemaHospital::crearBaseDeDatos() {
     HistorialClinico registro1("Resfriado", "Descanso y liquidos");
     HistorialClinico registro2("Gripe", "Antivirales");
@@ -30,15 +28,14 @@ void SistemaHospital::crearBaseDeDatos() {
     Reporte reporte2(2, "Reporte B", "Contenido del Reporte B");
     reportes = { reporte1, reporte2 };
 
-    // Crear archivos CSV y escribir los datos correspondientes
-
+    
     // Archivo CSV para Pacientes
     std::ofstream archivoPacientes("pacientes.csv");
     archivoPacientes << "Nombre,ID,FechaIngreso,HistorialClinico\n";
     for (const auto& paciente : pacientes) {
         archivoPacientes << paciente.getNombre() << ","
             << paciente.getId() << ","
-            << paciente.getfechaIngreso() << ",";
+            << paciente.getFechaIngreso() << ",";
         for (const auto& historial : paciente.getHistorial()) {
             archivoPacientes << historial.getDiagnostico() << ": " << historial.getTratamiento() << "; ";
         }
@@ -68,6 +65,7 @@ void SistemaHospital::crearBaseDeDatos() {
             << cita.getPrioridad() << "\n";
     }
     archivoCitas.close();
+
 }
 
 void SistemaHospital::crearMenu() {
@@ -117,7 +115,7 @@ void SistemaHospital::crearMenu() {
                 int idPaciente;
                 std::cout << "Ingrese tu ID: ";
                 std::cin >> idPaciente;
-                Paciente::consultarPaciente(pacientes, idPaciente);
+                Paciente::consultarPaciente(idPaciente);
                 break;
             }
             case 3: {
@@ -151,13 +149,13 @@ void SistemaHospital::crearMenu() {
             std::cin >> opcionMedico;
 
             switch (opcionMedico) {
-            case 1: { 
+            case 1: {
                 int opcionPaciente;
                 std::cout << "\n--- GESTION DE PACIENTES ---" << std::endl;
                 std::cout << "1. Agregar paciente" << std::endl;
                 std::cout << "2. Eliminar paciente" << std::endl;
                 std::cout << "3. Consultar paciente" << std::endl;
-                std::cout << "4. Agregar registro al historial clinico" << std::endl; 
+                std::cout << "4. Agregar registro al historial clinico" << std::endl;
                 std::cout << "Seleccione una opcion: ";
                 std::cin >> opcionPaciente;
 
@@ -175,28 +173,28 @@ void SistemaHospital::crearMenu() {
                     std::getline(std::cin, fechaIngreso);
                     std::vector<HistorialClinico> historial;
                     Paciente nuevoPaciente(nombre, id, fechaIngreso, historial);
-                    Paciente::agregarPaciente(pacientes, nuevoPaciente);
+                    Paciente::agregarPaciente(nuevoPaciente);
                     break;
                 }
                 case 2: {
                     int idPaciente;
                     std::cout << "Ingrese ID del paciente: ";
                     std::cin >> idPaciente;
-                    Paciente::eliminarPaciente(pacientes, idPaciente);
+                    Paciente::eliminarPaciente(idPaciente);
                     break;
                 }
                 case 3: {
                     int idPaciente;
                     std::cout << "Ingrese ID del paciente: ";
                     std::cin >> idPaciente;
-                    Paciente::consultarPaciente(pacientes, idPaciente);
+                    Paciente::consultarPaciente(idPaciente);
                     break;
                 }
-                case 4: {  
+                case 4: {
                     int idPaciente;
                     std::cout << "Ingrese ID del paciente: ";
                     std::cin >> idPaciente;
-                    std::cin.ignore(); 
+                    std::cin.ignore();
 
                     auto paciente = std::find_if(pacientes.begin(), pacientes.end(), [idPaciente](const Paciente& p) {
                         return p.getId() == idPaciente;
@@ -208,8 +206,7 @@ void SistemaHospital::crearMenu() {
                         std::getline(std::cin, diagnostico);
                         std::cout << "Ingrese tratamiento: ";
                         std::getline(std::cin, tratamiento);
-                        paciente->agregarRegistroHistorial(diagnostico, tratamiento);
-                        std::cout << "Registro agregado correctamente." << std::endl;
+                        paciente->agregarRegistroHistorial(idPaciente, diagnostico, tratamiento);
                     }
                     else {
                         std::cout << "Paciente no encontrado." << std::endl;
@@ -421,8 +418,8 @@ void SistemaHospital::crearMenu() {
         case 4: {
             std::cout << "Saliendo del programa..." << std::endl;
             break;
-            }
-            
+        }
+
         default:
             std::cout << "Opcion no valida. Intente de nuevo." << std::endl;
             break;

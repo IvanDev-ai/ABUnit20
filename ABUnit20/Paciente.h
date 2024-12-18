@@ -2,9 +2,12 @@
 #define PACIENTE_H
 
 #include <iostream>
-#include <string>
-#include "HistorialClinico.h"
+#include <fstream>
 #include <vector>
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include "HistorialClinico.h"
 
 class Paciente {
 private:
@@ -12,28 +15,36 @@ private:
     int id;
     std::string fechaIngreso;
     std::vector<HistorialClinico> historial;
+
+
 public:
     Paciente(std::string nombre, int id, std::string fechaIngreso, std::vector<HistorialClinico> historial);
 
     int getId() const {
         return id;
     }
+
     std::string getNombre() const {
         return nombre;
     }
-    std::string getfechaIngreso() const {
+
+    std::string getFechaIngreso() const {
         return fechaIngreso;
     }
+
     std::vector<HistorialClinico> getHistorial() const {
         return historial;
     }
+
+    static std::vector<Paciente> leerPacientesDesdeCSV(const std::string& nombreArchivo);
+    static void escribirPacientesEnCSV(const std::string& nombreArchivo, const std::vector<Paciente>& pacientes);
     void modificarDatos(const std::string& nuevoNombre, const std::string& nuevaFechaIngreso);
-    static void agregarPaciente(std::vector<Paciente>& pacientes, Paciente paciente);
-    static void eliminarPaciente(std::vector<Paciente>& pacientes, int idPaciente);
-    static void consultarPaciente(std::vector<Paciente> pacientes, int idPaciente);
-    void agregarRegistroHistorial(std::string& diagnostico, std::string& tratamiento);
+    static void agregarPaciente(Paciente paciente);
+    static void eliminarPaciente(int idPaciente);
+    static void consultarPaciente(int idPaciente);
+    void agregarRegistroHistorial(int idPaciente, const std::string& diagnostico, const std::string& tratamiento);
 
     void mostrarInformacion() const;
 };
 
-#endif 
+#endif
