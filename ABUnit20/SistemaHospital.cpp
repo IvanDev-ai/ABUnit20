@@ -1,6 +1,10 @@
 #include "SistemaHospital.h"
 namespace fs = std::filesystem;
-
+#ifdef _WIN32
+#define localtime_safe localtime_s
+#else
+#define localtime_safe localtime_r
+#endif
 SistemaHospital::SistemaHospital() {
     crearBaseDeDatos();
 }
@@ -486,7 +490,7 @@ void SistemaHospital::realizarCopiaCSV(const std::string& nombreArchivo) {
         if (fs::exists(archivoOriginal)) {
             std::time_t t = std::time(nullptr);
             std::tm tm;
-            localtime_s(&tm, &t);
+            localtime_safe(&tm, &t);
 
             std::ostringstream oss;
             oss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S");
@@ -508,7 +512,7 @@ void SistemaHospital::realizarCopiaBBDD() {
     try {
         std::time_t t = std::time(nullptr);
         std::tm tm;
-        localtime_s(&tm, &t);
+        localtime_safe(&tm, &t);
 
         std::ostringstream oss;
         oss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S");
