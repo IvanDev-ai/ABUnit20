@@ -1,6 +1,7 @@
 ﻿# CMakeLists.txt : CMake project for ABUnit20, include source and define
 # project specific logic here.
 #
+cmake_minimum_required(VERSION 3.8)
 project ("ABUnit20")
 
 # Define sources
