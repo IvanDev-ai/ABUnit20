@@ -37,7 +37,7 @@ public:
     }
     static std::vector<Cita> leerCitasDesdeCSV(const std::string& nombreArchivo);
     static void escribirCitasEnCSV(const std::string& nombreArchivo, const std::vector<Cita>& citas);
-
+    static void listarCitasPendientes(const std::string& criterio, bool esEspecialidad);
     static void programarCita(const Cita& cita);
     static void cancelarCita(int idCita);
     static void modificarCita(int idCita);

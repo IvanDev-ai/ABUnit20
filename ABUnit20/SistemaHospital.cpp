@@ -3,8 +3,8 @@ SistemaHospital::SistemaHospital() {
     crearBaseDeDatos();
 }
 void SistemaHospital::crearBaseDeDatos() {
-    HistorialClinico registro1("Resfriado", "Descanso y liquidos");
-    HistorialClinico registro2("Gripe", "Antivirales");
+    HistorialClinico registro1("Resfriado", "Descanso y liquidos", true);
+    HistorialClinico registro2("Gripe", "Antivirales", false);
     std::vector<HistorialClinico> historial1;
     std::vector<HistorialClinico> historial2;
     historial1.push_back(registro1);
@@ -36,7 +36,7 @@ void SistemaHospital::crearBaseDeDatos() {
             << paciente.getId() << ","
             << paciente.getFechaIngreso() << ",";
         for (const auto& historial : paciente.getHistorial()) {
-            archivoPacientes << historial.getDiagnostico() << ": " << historial.getTratamiento() << "; ";
+            archivoPacientes << historial.getDiagnostico() << ": " << historial.getTratamiento() << "; " << (historial.getEnfermedadCronica() ? "Enfermedad Cronica" : "Enfermedad Normal");
         }
         archivoPacientes << "\n";
     }
@@ -195,21 +195,15 @@ void SistemaHospital::crearMenu() {
                     std::cin >> idPaciente;
                     std::cin.ignore();
 
-                    auto paciente = std::find_if(pacientes.begin(), pacientes.end(), [idPaciente](const Paciente& p) {
-                        return p.getId() == idPaciente;
-                        });
-
-                    if (paciente != pacientes.end()) {
-                        std::string diagnostico, tratamiento;
-                        std::cout << "Ingrese diagnostico: ";
-                        std::getline(std::cin, diagnostico);
-                        std::cout << "Ingrese tratamiento: ";
-                        std::getline(std::cin, tratamiento);
-                        paciente->agregarRegistroHistorial(idPaciente, diagnostico, tratamiento);
-                    }
-                    else {
-                        std::cout << "Paciente no encontrado." << std::endl;
-                    }
+                    std::string diagnostico, tratamiento, enfermedadCronicaStr;
+                    std::cout << "Ingrese diagnostico: ";
+                    std::getline(std::cin, diagnostico);
+                    std::cout << "Ingrese tratamiento: ";
+                    std::getline(std::cin, tratamiento);
+                    std::cout << "Es una enfermedad Cronica? (solo responder Si o No): ";
+                    std::getline(std::cin, enfermedadCronicaStr);
+                    bool enfermedadCronica = (enfermedadCronicaStr == "Si");
+                    Paciente::agregarRegistroHistorial(idPaciente, diagnostico, tratamiento, enfermedadCronica);
                     break;
                 }
                 default:
@@ -347,23 +341,52 @@ void SistemaHospital::crearMenu() {
             case 4: {
                 int opcionReporte;
                 std::cout << "\n--- GESTION DE REPORTES ---" << std::endl;
-                std::cout << "1. Generar Reporte" << std::endl;
+                std::cout << "1. Listar Pacientes por fecha de ingreso" << std::endl;
+                std::cout << "2. Listar Citas pendientes por medico o especialidad" << std::endl;
+                std::cout << "3. Listar Pacientes con Enfermedades Cronicas" << std::endl;
                 std::cout << "Seleccione una opcion: ";
                 std::cin >> opcionReporte;
 
                 switch (opcionReporte) {
                 case 1: {
-                    int idReporte;
-                    std::string titulo, contenido;
-                    std::cout << "Ingrese ID del reporte: ";
-                    std::cin >> idReporte;
+                    std::string fecha1, fecha2;
+                    std::cout << "Ingrese Fecha de inicio: ";
+                    std::cin >> fecha1;
                     std::cin.ignore();
-                    std::cout << "Ingrese titulo del reporte: ";
-                    std::getline(std::cin, titulo);
-                    std::cout << "Ingrese contenido del reporte: ";
-                    std::getline(std::cin, contenido);
-                    Reporte nuevoReporte(idReporte, titulo, contenido);
-                    Reporte::generarReportes(reportes, nuevoReporte);
+                    std::cout << "Ingrese Fecha de fin: ";
+                    std::cin >> fecha2;
+                    Paciente::listarPacientesPorRangoDeFechas(fecha1, fecha2);
+                    break;
+                }
+                case 2: {
+                    int subopcion;
+                    std::cout << "Listar citas pendientes por:\n";
+                    std::cout << "1. Medico\n";
+                    std::cout << "2. Especialidad\n";
+                    std::cout << "Seleccione una opcion: ";
+                    std::cin >> subopcion;
+
+                    std::string criterio;
+                    if (subopcion == 1) {
+                        std::cout << "Ingrese el nombre del medico: ";
+                        std::cin.ignore();
+                        std::getline(std::cin, criterio);
+                        Cita::listarCitasPendientes(criterio, false);
+                    }
+                    else if (subopcion == 2) {
+                        std::cout << "Ingrese la especialidad: ";
+                        std::cin.ignore();
+                        std::getline(std::cin, criterio);
+                        Cita::listarCitasPendientes(criterio, true);
+                    }
+                    else {
+                        std::cout << "Opcion no valida. Intente de nuevo." << std::endl;
+                    }
+                    break;
+                }
+                case 3: {
+                    std::cout << "Listando pacientes con enfermedades crónicas..." << std::endl;
+                    Paciente::listarPacientesConEnfermedadesCronicas();
                     break;
                 }
                 default:

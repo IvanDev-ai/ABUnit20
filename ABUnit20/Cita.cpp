@@ -39,7 +39,9 @@ std::vector<Paciente> leerPacientesDesdeCSV(const std::string& nombreArchivo)
                 if (pos != std::string::npos) {
                     std::string enfermedad = registro.substr(0, pos);
                     std::string tratamiento = registro.substr(pos + 2);
-                    historial.push_back(HistorialClinico(enfermedad, tratamiento));
+                    std::string enfermedadCronicaStr = registro.substr(pos + 3);
+                    bool enfermedadCronica = (enfermedadCronicaStr == "true");
+                    historial.push_back(HistorialClinico(enfermedad, tratamiento, enfermedadCronica));
                 }
             }
 
@@ -274,6 +276,44 @@ void Cita::consultarCita(int idCita) {
         std::cout << "Cita no encontrada." << std::endl;
     }
 }
+
+void Cita::listarCitasPendientes(const std::string& criterio, bool esEspecialidad) {
+    std::vector<Cita> citas = leerCitasDesdeCSV("citas.csv");
+    std::vector<Cita> citasPendientes;
+
+    for (const auto& cita : citas) {
+        if (esEspecialidad) {
+            if (cita.getMedico().getEspecialidad() == criterio) {
+                citasPendientes.push_back(cita);
+            }
+        }
+        else {
+            if (cita.getMedico().getNombre() == criterio) {
+                citasPendientes.push_back(cita);
+            }
+        }
+    }
+
+    if (citasPendientes.empty()) {
+        if (esEspecialidad) {
+            std::cout << "No se encontraron citas pendientes para la especialidad: " << criterio << std::endl;
+        }
+        else {
+            std::cout << "No se encontraron citas pendientes para el medico: " << criterio << std::endl;
+        }
+    }
+    else {
+        std::sort(citasPendientes.begin(), citasPendientes.end(), [](const Cita& a, const Cita& b) {
+            return a.getFecha() > b.getFecha();
+            });
+
+        for (const auto& cita : citasPendientes) {
+            cita.mostrarInformacion();
+            std::cout << std::endl;
+        }
+    }
+}
+
 
 void Cita::mostrarInformacion() const {
     std::cout << "ID: " << id << std::endl;
