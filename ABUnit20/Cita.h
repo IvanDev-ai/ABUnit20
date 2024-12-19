@@ -42,6 +42,7 @@ public:
     static void cancelarCita(int idCita);
     static void modificarCita(int idCita);
     static void consultarCita(int idCita);
+    static void listarCitasPorUrgencia(const std::string& urgencia);
     void mostrarInformacion() const;
 };
 

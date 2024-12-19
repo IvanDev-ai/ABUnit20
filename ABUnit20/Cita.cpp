@@ -314,6 +314,28 @@ void Cita::listarCitasPendientes(const std::string& criterio, bool esEspecialida
     }
 }
 
+void Cita::listarCitasPorUrgencia(const std::string& urgencia) {
+    std::vector<Cita> citas = leerCitasDesdeCSV("citas.csv");
+    std::vector<Cita> citasFiltradas;
+
+    for (const auto& cita : citas) {
+        if (cita.getPrioridad() == urgencia) {
+            citasFiltradas.push_back(cita);
+        }
+    }
+
+    if (citasFiltradas.empty()) {
+        std::cout << "No se encontraron citas con la urgencia: " << urgencia << std::endl;
+        return;
+    }
+
+    for (const auto& cita : citasFiltradas) {
+        cita.mostrarInformacion();
+        std::cout << std::endl;
+    }
+}
+
+
 
 void Cita::mostrarInformacion() const {
     std::cout << "ID: " << id << std::endl;

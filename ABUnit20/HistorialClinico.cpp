@@ -6,7 +6,7 @@ HistorialClinico::HistorialClinico(std::string diagnostico, std::string tratamie
 std::string HistorialClinico::mostrarInformacion() const
 {
     std::ostringstream oss;
-    oss << "Diagnostico: " << diagnostico << "\nTratamiento: " << tratamiento << (enfermedadCronica ? "\nEnfermedad Cronica" : "\nEnfermedad Normal1") << std::endl;
+    oss << "Diagnostico: " << diagnostico << "\nTratamiento: " << tratamiento << (enfermedadCronica ? "\nEnfermedad Cronica" : "\nEnfermedad Normal") << std::endl;
     return oss.str();
 }
 

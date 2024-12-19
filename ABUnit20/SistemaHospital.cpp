@@ -289,6 +289,7 @@ void SistemaHospital::crearMenu() {
                 std::cout << "2. Cancelar cita" << std::endl;
                 std::cout << "3. Modificar cita" << std::endl;
                 std::cout << "4. Consultar cita" << std::endl;
+                std::cout << "5. Ordenar citas por Urgencia" << std::endl;
                 std::cout << "Seleccione una opcion: ";
                 std::cin >> opcionCita;
 
@@ -337,6 +338,13 @@ void SistemaHospital::crearMenu() {
                     std::cout << "Ingrese ID de la cita: ";
                     std::cin >> idCita;
                     Cita::consultarCita(idCita);
+                    break;
+                }
+                case 5: {
+                    std::string urgencia;
+                    std::cout << "Ingrese el tipo de urgencia: ";
+                    std::cin >> urgencia;
+                    Cita::listarCitasPorUrgencia(urgencia);
                     break;
                 }
                 default:
