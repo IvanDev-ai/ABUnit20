@@ -1,10 +1,5 @@
 #include "SistemaHospital.h"
 namespace fs = std::filesystem;
-#ifdef _WIN32
-#define localtime_safe localtime_s
-#else
-#define localtime_safe localtime_r
-#endif
 SistemaHospital::SistemaHospital() {
     crearBaseDeDatos();
 }
@@ -488,15 +483,14 @@ void SistemaHospital::realizarCopiaCSV(const std::string& nombreArchivo) {
     try {
         fs::path archivoOriginal = nombreArchivo;
         if (fs::exists(archivoOriginal)) {
-            std::time_t t = std::time(nullptr);
-            std::tm tm;
-            localtime_safe(&tm, &t);
+            int contador = 1;
+            fs::path archivoCopia = archivoOriginal.stem().string() + "_copia" + std::to_string(contador) + archivoOriginal.extension().string();
 
-            std::ostringstream oss;
-            oss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S");
-            std::string timestamp = oss.str();
+            while (fs::exists(archivoCopia)) {
+                contador++;
+                archivoCopia = archivoOriginal.stem().string() + "_copia" + std::to_string(contador) + archivoOriginal.extension().string();
+            }
 
-            fs::path archivoCopia = archivoOriginal.stem().string() + "_" + timestamp + archivoOriginal.extension().string();
             fs::copy_file(archivoOriginal, archivoCopia);
             std::cout << "Copia de seguridad de " << nombreArchivo << " creada como " << archivoCopia << std::endl;
         }
@@ -508,24 +502,24 @@ void SistemaHospital::realizarCopiaCSV(const std::string& nombreArchivo) {
         std::cerr << "Error al realizar la copia de seguridad: " << e.what() << std::endl;
     }
 }
+
 void SistemaHospital::realizarCopiaBBDD() {
     try {
-        std::time_t t = std::time(nullptr);
-        std::tm tm;
-        localtime_safe(&tm, &t);
-
-        std::ostringstream oss;
-        oss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S");
-        std::string timestamp = oss.str();
-
-        fs::path directorioCopia = "Backup_" + timestamp;
+        fs::path directorioCopia = "Backup";
         fs::create_directory(directorioCopia);
 
         std::vector<std::string> archivos = { "pacientes.csv", "citas.csv", "medicos.csv" };
         for (const auto& archivo : archivos) {
             fs::path archivoOriginal = archivo;
             if (fs::exists(archivoOriginal)) {
-                fs::path archivoCopia = directorioCopia / archivoOriginal.filename();
+                int contador = 1;
+                fs::path archivoCopia = directorioCopia / (archivoOriginal.stem().string() + "_copia" + std::to_string(contador) + archivoOriginal.extension().string());
+
+                while (fs::exists(archivoCopia)) {
+                    contador++;
+                    archivoCopia = directorioCopia / (archivoOriginal.stem().string() + "_copia" + std::to_string(contador) + archivoOriginal.extension().string());
+                }
+
                 fs::copy_file(archivoOriginal, archivoCopia);
                 std::cout << "Copia de seguridad de " << archivo << " creada en " << archivoCopia << std::endl;
             }
@@ -538,6 +532,7 @@ void SistemaHospital::realizarCopiaBBDD() {
         std::cerr << "Error al realizar la copia de seguridad: " << e.what() << std::endl;
     }
 }
+
 
 
 void SistemaHospital::ejecutarSistema() {

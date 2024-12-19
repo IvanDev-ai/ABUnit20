@@ -7,8 +7,6 @@
 #include <fstream>
 #include <algorithm>
 #include <filesystem>
-#include <ctime>
-#include <iomanip>
 #include "Paciente.h"
 #include "Medico.h"
 #include "Cita.h"
