@@ -5,24 +5,24 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <algorithm>
+#include <filesystem>
+#include <ctime>
+#include <iomanip>
 #include "Paciente.h"
 #include "Medico.h"
 #include "Cita.h"
 #include "HistorialClinico.h"
-#include "Reporte.h"
 class SistemaHospital {
 private:
     std::vector<Paciente> pacientes;
     std::vector<Medico> medicos;
     std::vector<Cita> citas;
-    std::vector<Reporte> reportes;
 public:
     SistemaHospital();
 
-    // Métodos 
-
-    //void guardarDatosEnArchivo();
-    //void realizarCopiaBBDD();
+    void realizarCopiaCSV(const std::string& nombreArchivo);
+    void realizarCopiaBBDD();
     void crearBaseDeDatos();
     void crearMenu();
     void ejecutarSistema();

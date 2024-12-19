@@ -1,4 +1,6 @@
 #include "SistemaHospital.h"
+namespace fs = std::filesystem;
+
 SistemaHospital::SistemaHospital() {
     crearBaseDeDatos();
 }
@@ -23,10 +25,6 @@ void SistemaHospital::crearBaseDeDatos() {
     Cita cita1(11, paciente1, medico1, "2023-11-26 10:00", "Urgente");
     Cita cita2(12, paciente2, medico2, "2023-11-27 15:00", "Normal");
     citas = { cita1, cita2 };
-
-    Reporte reporte1(1, "Reporte A", "Contenido del Reporte A");
-    Reporte reporte2(2, "Reporte B", "Contenido del Reporte B");
-    reportes = { reporte1, reporte2 };
 
     // Archivo CSV para Pacientes
     std::ofstream archivoPacientes("pacientes.csv");
@@ -195,15 +193,24 @@ void SistemaHospital::crearMenu() {
                     std::cin >> idPaciente;
                     std::cin.ignore();
 
-                    std::string diagnostico, tratamiento, enfermedadCronicaStr;
-                    std::cout << "Ingrese diagnostico: ";
-                    std::getline(std::cin, diagnostico);
-                    std::cout << "Ingrese tratamiento: ";
-                    std::getline(std::cin, tratamiento);
-                    std::cout << "Es una enfermedad Cronica? (solo responder Si o No): ";
-                    std::getline(std::cin, enfermedadCronicaStr);
-                    bool enfermedadCronica = (enfermedadCronicaStr == "Si");
-                    Paciente::agregarRegistroHistorial(idPaciente, diagnostico, tratamiento, enfermedadCronica);
+                    auto paciente = std::find_if(pacientes.begin(), pacientes.end(), [idPaciente](const Paciente& p) {
+                        return p.getId() == idPaciente;
+                        });
+
+                    if (paciente != pacientes.end()) {
+                        std::string diagnostico, tratamiento, enfermedadCronicaStr;
+                        std::cout << "Ingrese diagnostico: ";
+                        std::getline(std::cin, diagnostico);
+                        std::cout << "Ingrese tratamiento: ";
+                        std::getline(std::cin, tratamiento);
+                        std::cout << "Es una enfermedad Cronica? (solo responder Si o No): ";
+                        std::getline(std::cin, enfermedadCronicaStr);
+                        bool enfermedadCronica = (enfermedadCronicaStr == "Si");
+                        paciente->agregarRegistroHistorial(idPaciente, diagnostico, tratamiento, enfermedadCronica);
+                    }
+                    else {
+                        std::cout << "Paciente no encontrado." << std::endl;
+                    }
                     break;
                 }
                 default:
@@ -405,30 +412,44 @@ void SistemaHospital::crearMenu() {
         case 3: {
             int opcionGestion;
             std::cout << "\n--- GESTION DE HOSPITAL ---" << std::endl;
-            std::cout << "1. Generar Reporte" << std::endl;
-            std::cout << "2. Consultar Reporte" << std::endl;
+            std::cout << "1. Copia de 1 archivo" << std::endl;
+            std::cout << "2. BackUp completo" << std::endl;
             std::cout << "Seleccione una opcion: ";
             std::cin >> opcionGestion;
             switch (opcionGestion) {
             case 1: {
-                int idReporte;
-                std::string titulo, contenido;
-                std::cout << "Ingrese ID del reporte: ";
-                std::cin >> idReporte;
-                std::cin.ignore();
-                std::cout << "Ingrese titulo del reporte: ";
-                std::getline(std::cin, titulo);
-                std::cout << "Ingrese contenido del reporte: ";
-                std::getline(std::cin, contenido);
-                Reporte nuevoReporte(idReporte, titulo, contenido);
-                Reporte::generarReportes(reportes, nuevoReporte);
+                int archivoOpcion;
+                std::cout << "\n--- SELECCIONAR ARCHIVO ---" << std::endl;
+                std::cout << "1. Pacientes\n";
+                std::cout << "2. Medicos\n";
+                std::cout << "3. Citas\n";
+                std::cout << "Seleccione un archivo para hacer la copia: ";
+                std::cin >> archivoOpcion;
+                std::string nombreArchivo;
+
+                switch (archivoOpcion) {
+                case 1:
+                    nombreArchivo = "pacientes.csv";
+                    break;
+                case 2:
+                    nombreArchivo = "medicos.csv";
+                    break;
+                case 3:
+                    nombreArchivo = "citas.csv";
+                    break;
+                default:
+                    std::cout << "Opcion no valida. Intente de nuevo." << std::endl;
+                    break;
+                }
+
+                if (!nombreArchivo.empty()) {
+                    realizarCopiaCSV(nombreArchivo);
+                }
+                break;
                 break;
             }
             case 2: {
-                int idReporte;
-                std::cout << "Ingrese ID del reporte: ";
-                std::cin >> idReporte;
-                Reporte::consultarReportes(reportes, idReporte);
+                realizarCopiaBBDD();
                 break;
             }
             default:
@@ -448,6 +469,60 @@ void SistemaHospital::crearMenu() {
         }
     } while (opcion != 4);
 }
+
+
+
+void SistemaHospital::realizarCopiaCSV(const std::string& nombreArchivo) {
+    try {
+        fs::path archivoOriginal = nombreArchivo;
+        if (fs::exists(archivoOriginal)) {
+            std::time_t t = std::time(nullptr);
+            std::tm tm = *std::localtime(&t);
+            std::ostringstream oss;
+            oss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S");
+            std::string timestamp = oss.str();
+
+            fs::path archivoCopia = archivoOriginal.stem().string() + "_" + timestamp + archivoOriginal.extension().string();
+            fs::copy_file(archivoOriginal, archivoCopia);
+            std::cout << "Copia de seguridad de " << nombreArchivo << " creada como " << archivoCopia << std::endl;
+        }
+        else {
+            std::cerr << "El archivo " << nombreArchivo << " no existe." << std::endl;
+        }
+    }
+    catch (const fs::filesystem_error& e) {
+        std::cerr << "Error al realizar la copia de seguridad: " << e.what() << std::endl;
+    }
+}
+void SistemaHospital::realizarCopiaBBDD() {
+    try {
+        std::time_t t = std::time(nullptr);
+        std::tm tm = *std::localtime(&t);
+        std::ostringstream oss;
+        oss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S");
+        std::string timestamp = oss.str();
+
+        fs::path directorioCopia = "Backup_" + timestamp;
+        fs::create_directory(directorioCopia);
+
+        std::vector<std::string> archivos = { "pacientes.csv", "citas.csv", "medicos.csv" };
+        for (const auto& archivo : archivos) {
+            fs::path archivoOriginal = archivo;
+            if (fs::exists(archivoOriginal)) {
+                fs::path archivoCopia = directorioCopia / archivoOriginal.filename();
+                fs::copy_file(archivoOriginal, archivoCopia);
+                std::cout << "Copia de seguridad de " << archivo << " creada en " << archivoCopia << std::endl;
+            }
+            else {
+                std::cerr << "El archivo " << archivo << " no existe." << std::endl;
+            }
+        }
+    }
+    catch (const fs::filesystem_error& e) {
+        std::cerr << "Error al realizar la copia de seguridad: " << e.what() << std::endl;
+    }
+}
+
 
 void SistemaHospital::ejecutarSistema() {
     crearBaseDeDatos();

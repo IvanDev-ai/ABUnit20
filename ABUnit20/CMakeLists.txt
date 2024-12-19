@@ -17,8 +17,6 @@ set(SOURCES
     "Cita.cpp"
     "SistemaHospital.cpp"
     "SistemaHospital.h"
-    "Reporte.h"
-    "Reporte.cpp"
 )
 
 # Add source to this project's executable.
