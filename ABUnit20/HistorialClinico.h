@@ -5,6 +5,7 @@
 #include <map>
 #include <string>
 #include <sstream>
+#include <algorithm>
 class HistorialClinico {
 
 private:

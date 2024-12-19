@@ -1,11 +1,14 @@
 #ifndef CITA_H
 #define CITA_H
 
-#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
 #include <string>
 #include <algorithm>
 #include "Paciente.h"
 #include "Medico.h"
+
 class Cita {
 private:
     int id;
@@ -32,11 +35,14 @@ public:
     std::string getPrioridad() const {
         return prioridad;
     }
-    static void programarCita(std::vector<Cita>& citas, Cita cita);
-    static void cancelarCita(std::vector<Cita>& citas, int idCita);
-    static void modificarCita(std::vector<Cita>& citas, int idCita, std::vector<Paciente>& pacientes, std::vector<Medico>& medicos);
-    static void consultarCita(std::vector<Cita> citas, int idCita);
+    static std::vector<Cita> leerCitasDesdeCSV(const std::string& nombreArchivo);
+    static void escribirCitasEnCSV(const std::string& nombreArchivo, const std::vector<Cita>& citas);
+
+    static void programarCita(const Cita& cita);
+    static void cancelarCita(int idCita);
+    static void modificarCita(int idCita);
+    static void consultarCita(int idCita);
     void mostrarInformacion() const;
 };
 
-#endif 
+#endif

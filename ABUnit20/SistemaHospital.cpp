@@ -128,7 +128,7 @@ void SistemaHospital::crearMenu() {
                 int idCita;
                 std::cout << "Ingrese ID de la cita: ";
                 std::cin >> idCita;
-                Cita::consultarCita(citas, idCita);
+                Cita::consultarCita(idCita);
                 break;
             }
             default:
@@ -310,7 +310,7 @@ void SistemaHospital::crearMenu() {
                     auto medico = std::find_if(medicos.begin(), medicos.end(), [idMedico](const Medico& m) { return m.getId() == idMedico; });
                     if (paciente != pacientes.end() && medico != medicos.end()) {
                         Cita nuevaCita(idCita, *paciente, *medico, fecha, prioridad);
-                        Cita::programarCita(citas, nuevaCita);
+                        Cita::programarCita(nuevaCita);
                     }
                     else {
                         std::cout << "Paciente o Medico no encontrado." << std::endl;
@@ -321,21 +321,21 @@ void SistemaHospital::crearMenu() {
                     int idCita;
                     std::cout << "Ingrese ID de la cita: ";
                     std::cin >> idCita;
-                    Cita::cancelarCita(citas, idCita);
+                    Cita::cancelarCita(idCita);
                     break;
                 }
                 case 3: {
                     int idCita;
                     std::cout << "Ingrese ID de la cita: ";
                     std::cin >> idCita;
-                    Cita::modificarCita(citas, idCita, pacientes, medicos);
+                    Cita::modificarCita(idCita);
                     break;
                 }
                 case 4: {
                     int idCita;
                     std::cout << "Ingrese ID de la cita: ";
                     std::cin >> idCita;
-                    Cita::consultarCita(citas, idCita);
+                    Cita::consultarCita(idCita);
                     break;
                 }
                 default:

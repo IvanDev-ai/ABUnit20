@@ -1,52 +1,221 @@
 #include "Cita.h"
 
 Cita::Cita(int id, Paciente paciente, Medico medico, const std::string& fecha, const std::string& prioridad)
-    : id(id),paciente(paciente), medico(medico), fecha(fecha), prioridad(prioridad) {
+    : id(id), paciente(paciente), medico(medico), fecha(fecha), prioridad(prioridad) {
 }
 
-
-void Cita::programarCita(std::vector<Cita>& citas, Cita cita)
+std::vector<Paciente> leerPacientesDesdeCSV(const std::string& nombreArchivo)
 {
-    citas.push_back(cita);
+    std::vector<Paciente> pacientes;
+    std::ifstream archivo(nombreArchivo);
+    std::string linea, nombre, fechaIngreso, historialClinicoStr;
+    int id;
+
+    if (archivo.is_open()) {
+        std::getline(archivo, linea);
+
+        while (std::getline(archivo, linea)) {
+            std::stringstream ss(linea);
+            std::getline(ss, nombre, ',');
+
+            ss >> id;
+            ss.ignore(1, ',');
+
+            std::getline(ss, fechaIngreso, ',');
+
+            std::replace(fechaIngreso.begin(), fechaIngreso.end(), ',', '-');
+
+            std::getline(ss, historialClinicoStr);
+
+            std::vector<HistorialClinico> historial;
+            std::stringstream historialStream(historialClinicoStr);
+            std::string registro;
+
+            while (std::getline(historialStream, registro, ';')) {
+                if (registro.empty()) {
+                    continue;
+                }
+                size_t pos = registro.find(": ");
+                if (pos != std::string::npos) {
+                    std::string enfermedad = registro.substr(0, pos);
+                    std::string tratamiento = registro.substr(pos + 2);
+                    historial.push_back(HistorialClinico(enfermedad, tratamiento));
+                }
+            }
+
+            Paciente paciente(nombre, id, fechaIngreso, historial);
+            pacientes.push_back(paciente);
+        }
+        archivo.close();
+    }
+    else {
+        std::cerr << "No se pudo abrir el archivo " << nombreArchivo << std::endl;
+    }
+    return pacientes;
 }
 
-void Cita::cancelarCita(std::vector<Cita>& citas, int idCita)
-{
-    for (auto it = citas.begin(); it != citas.end(); ++it) {
-        if (it->getId() == idCita) {
-            citas.erase(it);
-            return;
+std::vector<Medico> leerMedicosDesdeCSV(const std::string& nombreArchivo) {
+    std::vector<Medico> medicos;
+    std::ifstream archivo(nombreArchivo);
+    std::string linea, nombre, especialidad, disponibilidadStr;
+    int id;
+    bool disponibilidad;
+
+    if (archivo.is_open()) {
+        std::getline(archivo, linea);
+
+        while (std::getline(archivo, linea)) {
+            std::stringstream ss(linea);
+            ss >> id;
+            ss.ignore(1, ',');
+            std::getline(ss, nombre, ',');
+            std::getline(ss, especialidad, ',');
+            std::getline(ss, disponibilidadStr);
+
+            disponibilidad = (disponibilidadStr == "Si");
+
+            Medico medico(nombre, id, especialidad, disponibilidad);
+            medicos.push_back(medico);
+        }
+        archivo.close();
+    }
+    else {
+        std::cerr << "No se pudo abrir el archivo " << nombreArchivo << std::endl;
+    }
+    return medicos;
+}
+
+// Buscar un paciente por nombre
+Paciente buscarPaciente(const std::string nombrePaciente) {
+    std::vector<Paciente> pacientes = leerPacientesDesdeCSV("pacientes.csv");
+
+    for (auto& paciente : pacientes) {
+        if (paciente.getNombre() == nombrePaciente) {
+            return paciente;
         }
     }
-    std::cout << "Cita no encontrada." << std::endl;
+
+    throw std::runtime_error("Paciente no encontrado");
 }
 
-void Cita::modificarCita(std::vector<Cita>& citas, int idCita, std::vector<Paciente>& pacientes, std::vector<Medico>& medicos)
-{
+// Buscar un médico por nombre
+Medico buscarMedico(const std::string nombreMedico) {
+    std::vector<Medico> medicos = leerMedicosDesdeCSV("medicos.csv");
+
+    for (auto& medico : medicos) {
+        if (medico.getNombre() == nombreMedico) {
+            return medico;
+        }
+    }
+
+    throw std::runtime_error("Médico no encontrado");
+}
+std::vector<Cita> Cita::leerCitasDesdeCSV(const std::string& nombreArchivo) {
+    std::vector<Cita> citas;
+    std::ifstream archivo(nombreArchivo);
+    std::string linea, nombrePaciente, nombreMedico, fecha, prioridad;
+    int id;
+
+    if (archivo.is_open()) {
+        std::getline(archivo, linea);
+
+        while (std::getline(archivo, linea)) {
+            std::stringstream ss(linea);
+
+
+            ss >> id;
+            ss.ignore(1, ',');
+            std::getline(ss, nombrePaciente, ',');
+            std::getline(ss, nombreMedico, ',');
+            std::getline(ss, fecha, ',');
+            std::getline(ss, prioridad);
+
+
+            Paciente paciente = buscarPaciente(nombrePaciente);
+            Medico medico = buscarMedico(nombreMedico);
+
+
+            Cita nuevaCita(id, paciente, medico, fecha, prioridad);
+            citas.push_back(nuevaCita);
+        }
+        archivo.close();
+    }
+    else {
+        std::cerr << "No se pudo abrir el archivo " << nombreArchivo << std::endl;
+    }
+
+    return citas;
+}
+
+void Cita::escribirCitasEnCSV(const std::string& nombreArchivo, const std::vector<Cita>& citas) {
+    std::ofstream archivo(nombreArchivo);
+
+    if (archivo.is_open()) {
+        archivo << "ID,Paciente,Medico,FechaHora,Prioridad\n";
+
+        for (const auto& cita : citas) {
+            archivo << cita.getId() << ","
+                << cita.getPaciente().getNombre() << ","
+                << cita.getMedico().getNombre() << ","
+                << cita.getFecha() << ","
+                << cita.getPrioridad() << "\n";
+        }
+        archivo.close();
+    }
+    else {
+        std::cerr << "No se pudo abrir el archivo " << nombreArchivo << std::endl;
+    }
+}
+
+void Cita::programarCita(const Cita& cita) {
+    std::vector<Cita> citas = leerCitasDesdeCSV("citas.csv");
+    citas.push_back(cita);
+    escribirCitasEnCSV("citas.csv", citas);
+}
+
+void Cita::cancelarCita(int idCita) {
+    std::vector<Cita> citas = leerCitasDesdeCSV("citas.csv");
+    auto it = std::remove_if(citas.begin(), citas.end(), [idCita](const Cita& cita) {
+        return cita.getId() == idCita;
+        });
+
+    if (it != citas.end()) {
+        citas.erase(it, citas.end());
+        escribirCitasEnCSV("citas.csv", citas);
+    }
+    else {
+        std::cout << "Cita no encontrada." << std::endl;
+    }
+}
+
+void Cita::modificarCita(int idCita) {
+    std::vector<Cita> citas = leerCitasDesdeCSV("citas.csv");
+    std::vector<Paciente> pacientes = leerPacientesDesdeCSV("pacientes.csv");
+    std::vector<Medico> medicos = leerMedicosDesdeCSV("medicos.csv");
+
     auto it = std::find_if(citas.begin(), citas.end(), [idCita](const Cita& cita) {
         return cita.getId() == idCita;
         });
 
     if (it != citas.end()) {
         int opcion;
-        std::cout << "¿Que deseas modificar?\n";
+        std::cout << "¿Qué deseas modificar?\n";
         std::cout << "1. Paciente\n";
         std::cout << "2. Medico\n";
         std::cout << "3. Fecha\n";
         std::cout << "4. Prioridad\n";
-        std::cout << "Elige una opcion: ";
+        std::cout << "Elige una opción: ";
         std::cin >> opcion;
 
         switch (opcion) {
         case 1: {
-            int nuevoIdPaciente;
-            std::cout << "Introduce el nuevo ID del paciente: ";
-            std::cin >> nuevoIdPaciente;
-            auto pacienteIt = std::find_if(pacientes.begin(), pacientes.end(), [nuevoIdPaciente](const Paciente& paciente) {
-                return paciente.getId() == nuevoIdPaciente;
-                });
-            if (pacienteIt != pacientes.end()) {
-                it->paciente = *pacienteIt;
+            std::string nuevoNombrePaciente;
+            std::cout << "Introduce el nuevo nombre del paciente (Tiene que existir en pacientes.csv primero): ";
+            std::cin.ignore();
+            std::getline(std::cin, nuevoNombrePaciente);
+            Paciente nuevoPaciente = buscarPaciente(nuevoNombrePaciente);
+            if (nuevoPaciente.getId() != -1) {
+                it->paciente = nuevoPaciente;
             }
             else {
                 std::cout << "Paciente no encontrado." << std::endl;
@@ -54,14 +223,13 @@ void Cita::modificarCita(std::vector<Cita>& citas, int idCita, std::vector<Pacie
             break;
         }
         case 2: {
-            int nuevoIdMedico;
-            std::cout << "Introduce el nuevo ID del medico: ";
-            std::cin >> nuevoIdMedico;
-            auto medicoIt = std::find_if(medicos.begin(), medicos.end(), [nuevoIdMedico](const Medico& medico) {
-                return medico.getId() == nuevoIdMedico;
-                });
-            if (medicoIt != medicos.end()) {
-                it->medico = *medicoIt;
+            std::string nuevoNombreMedico;
+            std::cout << "Introduce el nuevo nombre del medico (Tiene que existir en medicos.csv primero): ";
+            std::cin.ignore();
+            std::getline(std::cin, nuevoNombreMedico);
+            Medico nuevoMedico = buscarMedico(nuevoNombreMedico);
+            if (nuevoMedico.getId() != -1) {
+                it->medico = nuevoMedico;
             }
             else {
                 std::cout << "Medico no encontrado." << std::endl;
@@ -70,20 +238,21 @@ void Cita::modificarCita(std::vector<Cita>& citas, int idCita, std::vector<Pacie
         }
         case 3: {
             std::cout << "Introduce la nueva fecha de la cita (formato: YYYY-MM-DD HH:MM): ";
-            std::cin.ignore(); 
-            std::getline(std::cin, it->fecha);  
+            std::cin.ignore();
+            std::getline(std::cin, it->fecha);
             break;
         }
         case 4: {
             std::cout << "Introduce la nueva prioridad (e.g., baja, urgente): ";
-            std::cin.ignore();  
-            std::getline(std::cin, it->prioridad); 
+            std::cin.ignore();
+            std::getline(std::cin, it->prioridad);
             break;
         }
         default:
-            std::cout << "Opcion no valida." << std::endl;
+            std::cout << "Opción no válida." << std::endl;
         }
 
+        escribirCitasEnCSV("citas.csv", citas);
         std::cout << "Cita modificada correctamente." << std::endl;
     }
     else {
@@ -91,20 +260,24 @@ void Cita::modificarCita(std::vector<Cita>& citas, int idCita, std::vector<Pacie
     }
 }
 
-void Cita::consultarCita(std::vector<Cita> citas, int idCita)
-{
-    for (const auto& cita : citas) {
-        if (cita.getId() == idCita) {
-            cita.mostrarInformacion();
-            return;
-        }
+
+void Cita::consultarCita(int idCita) {
+    std::vector<Cita> citas = leerCitasDesdeCSV("citas.csv");
+    auto it = std::find_if(citas.begin(), citas.end(), [idCita](const Cita& cita) {
+        return cita.getId() == idCita;
+        });
+
+    if (it != citas.end()) {
+        it->mostrarInformacion();
     }
-    std::cout << "Cita no encontrada." << std::endl;
+    else {
+        std::cout << "Cita no encontrada." << std::endl;
+    }
 }
 
 void Cita::mostrarInformacion() const {
-    std::cout << " Id: " << id <<  std::endl;
-    std::cout << " Paciente: " << std::endl;
+    std::cout << "ID: " << id << std::endl;
+    std::cout << "Paciente: " << std::endl;
     paciente.mostrarInformacion();
     std::cout << "Medico: " << std::endl;
     medico.mostrarInformacion();
