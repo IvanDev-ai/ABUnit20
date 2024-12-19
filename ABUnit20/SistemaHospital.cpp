@@ -477,7 +477,9 @@ void SistemaHospital::realizarCopiaCSV(const std::string& nombreArchivo) {
         fs::path archivoOriginal = nombreArchivo;
         if (fs::exists(archivoOriginal)) {
             std::time_t t = std::time(nullptr);
-            std::tm tm = *std::localtime(&t);
+            std::tm tm;
+            localtime_s(&tm, &t);
+
             std::ostringstream oss;
             oss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S");
             std::string timestamp = oss.str();
@@ -497,7 +499,9 @@ void SistemaHospital::realizarCopiaCSV(const std::string& nombreArchivo) {
 void SistemaHospital::realizarCopiaBBDD() {
     try {
         std::time_t t = std::time(nullptr);
-        std::tm tm = *std::localtime(&t);
+        std::tm tm;
+        localtime_s(&tm, &t);
+
         std::ostringstream oss;
         oss << std::put_time(&tm, "%Y-%m-%d_%H-%M-%S");
         std::string timestamp = oss.str();
