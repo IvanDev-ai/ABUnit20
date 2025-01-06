@@ -1,6 +1,26 @@
 #include "SistemaHospital.h"
 namespace fs = std::filesystem;
 SistemaHospital::SistemaHospital() {}
+bool esFechaValida(const std::string& fecha) {
+    // Comprobar que la longitud sea correcta
+    if (fecha.length() != 10) {
+        return false;
+    }
+    // Comprobar que el formato sea "YYYY-MM-DD"
+    if (fecha[4] != '-' || fecha[7] != '-') {
+        return false; 
+    }
+
+    // Comprobar que los caracteres restantes sean números
+    for (int i = 0; i < 10; ++i) {
+        if (i != 4 && i != 7) { 
+            if (!isdigit(fecha[i])) {
+                return false;
+            }
+        }
+    }
+    return true;
+}
 
 void SistemaHospital::crearBaseDeDatos() {
     HistorialClinico registro1("Resfriado", "Descanso y liquidos", true);
@@ -20,8 +40,8 @@ void SistemaHospital::crearBaseDeDatos() {
     Medico medico3("Dr. Carlos Sanchez", 103, "Traumatologia", true);
     medicos = { medico1, medico2, medico3 };
 
-    Cita cita1(11, paciente1, medico1, "2023-11-26 10:00", "Urgente");
-    Cita cita2(12, paciente2, medico2, "2023-11-27 15:00", "Normal");
+    Cita cita1(11, paciente1, medico1, "2023-11-26", "Urgente");
+    Cita cita2(12, paciente2, medico2, "2023-11-27", "Normal");
     citas = { cita1, cita2 };
 
     // Archivo CSV para Pacientes
@@ -99,6 +119,10 @@ void SistemaHospital::crearMenu() {
                     std::getline(std::cin, nuevoNombre);
                     std::cout << "Ingrese nueva fecha de ingreso (YYYY-MM-DD): ";
                     std::getline(std::cin, nuevaFechaIngreso);
+					if (!esFechaValida(nuevaFechaIngreso)) {
+						std::cout << "Fecha invalida. Por favor ingrese una fecha valida.\n";
+						break;
+					}
                     for (auto& paciente : pacientes) {
                         if (paciente.getId() == idPaciente) {
 							for (auto& c : citas) {
@@ -201,6 +225,10 @@ void SistemaHospital::crearMenu() {
                     std::cin.ignore();
                     std::cout << "Ingrese fecha de ingreso (YYYY-MM-DD): ";
                     std::getline(std::cin, fechaIngreso);
+                    if (!esFechaValida(fechaIngreso)) {
+                        std::cout << "Fecha invalida. Por favor ingrese una fecha valida.\n";
+                        break;
+                    }
                     std::vector<HistorialClinico> historial;
                     Paciente nuevoPaciente(nombre, id, fechaIngreso, historial);
                     Paciente::agregarPaciente(nuevoPaciente);
@@ -397,8 +425,12 @@ void SistemaHospital::crearMenu() {
                         break;
                     }
                     std::cin.ignore();
-                    std::cout << "Ingrese fecha de la cita (YYYY-MM-DD HH:MM): ";
+                    std::cout << "Ingrese fecha de la cita (YYYY-MM-DD): ";
                     std::getline(std::cin, fecha);
+					if (!esFechaValida(fecha)) {
+						std::cout << "Fecha invalida. Por favor ingrese una fecha valida.\n";
+						break;
+					}
                     std::cout << "Ingrese prioridad de la cita (e.g., baja, urgente): ";
                     std::getline(std::cin, prioridad);
                     auto paciente = std::find_if(pacientes.begin(), pacientes.end(), [idPaciente](const Paciente& p) { return p.getId() == idPaciente; });
@@ -479,11 +511,19 @@ void SistemaHospital::crearMenu() {
                 switch (opcionReporte) {
                 case 1: {
                     std::string fecha1, fecha2;
-                    std::cout << "Ingrese Fecha de inicio: ";
+                    std::cout << "Ingrese Fecha de inicio (YYYY-MM-DD): ";
                     std::cin >> fecha1;
+                    if (!esFechaValida(fecha1)) {
+                        std::cout << "Fecha invalida. Por favor ingrese una fecha valida.\n";
+                        break;
+                    }
                     std::cin.ignore();
-                    std::cout << "Ingrese Fecha de fin: ";
+                    std::cout << "Ingrese Fecha de fin (YYYY-MM-DD): ";
                     std::cin >> fecha2;
+                    if (!esFechaValida(fecha2)) {
+                        std::cout << "Fecha invalida. Por favor ingrese una fecha valida.\n";
+                        break;
+                    }
                     Paciente::listarPacientesPorRangoDeFechas(fecha1, fecha2);
                     break;
                 }
