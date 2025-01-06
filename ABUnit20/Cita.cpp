@@ -344,7 +344,20 @@ void Cita::listarCitasPorUrgencia(const std::string& urgencia) {
     }
 }
 
+void Cita::cambiarNombrePaciente(const std::string& nuevoNombre) {
+    paciente.setNombre(nuevoNombre);
 
+    std::vector<Cita> citas = leerCitasDesdeCSV("citas.csv");
+
+    for (auto& cita : citas) {
+        if (cita.getId() == id) {
+            cita.paciente.setNombre(nuevoNombre);  
+            break;
+        }
+    }
+
+    escribirCitasEnCSV("citas.csv", citas);
+}
 
 void Cita::mostrarInformacion() const {
     std::cout << "ID: " << id << std::endl;

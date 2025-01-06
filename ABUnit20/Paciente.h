@@ -27,11 +27,12 @@ public:
     std::string getNombre() const {
         return nombre;
     }
-
+    void setNombre(const std::string& nuevoNombre) {
+        nombre = nuevoNombre;
+    }
     std::string getFechaIngreso() const {
         return fechaIngreso;
     }
-
     std::vector<HistorialClinico> getHistorial() const {
         return historial;
     }

@@ -43,6 +43,7 @@ public:
     static void modificarCita(int idCita);
     static void consultarCita(int idCita);
     static void listarCitasPorUrgencia(const std::string& urgencia);
+     void cambiarNombrePaciente(const std::string& nuevoNombre);
     void mostrarInformacion() const;
 };
 

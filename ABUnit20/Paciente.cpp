@@ -129,7 +129,6 @@ void Paciente::modificarDatos(const std::string& nuevoNombre, const std::string&
 
     escribirPacientesEnCSV("pacientes.csv", pacientes);
 }
-
 void Paciente::agregarPaciente(Paciente paciente) {
     std::vector<Paciente> pacientes = leerPacientesDesdeCSV("pacientes.csv");
 
