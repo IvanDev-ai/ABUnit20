@@ -93,16 +93,23 @@ void SistemaHospital::crearMenu() {
                 std::string nuevoNombre, nuevaFechaIngreso;
                 std::cout << "Ingrese tu ID: ";
                 std::cin >> idPaciente;
-                std::cin.ignore();
-                std::cout << "Ingrese nuevo nombre: ";
-                std::getline(std::cin, nuevoNombre);
-                std::cout << "Ingrese nueva fecha de ingreso (YYYY-MM-DD): ";
-                std::getline(std::cin, nuevaFechaIngreso);
-                for (auto& paciente : pacientes) {
-                    if (paciente.getId() == idPaciente) {
-                        paciente.modificarDatos(nuevoNombre, nuevaFechaIngreso);
-                        break;
+                if (std::cin) {
+                    std::cin.ignore();
+                    std::cout << "Ingrese nuevo nombre: ";
+                    std::getline(std::cin, nuevoNombre);
+                    std::cout << "Ingrese nueva fecha de ingreso (YYYY-MM-DD): ";
+                    std::getline(std::cin, nuevaFechaIngreso);
+                    for (auto& paciente : pacientes) {
+                        if (paciente.getId() == idPaciente) {
+                            paciente.modificarDatos(nuevoNombre, nuevaFechaIngreso);
+                            break;
+                        }
                     }
+                }
+                else {
+                    std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+                    std::cin.clear();
+                    std::cin.ignore();
                 }
                 break;
             }
@@ -110,21 +117,42 @@ void SistemaHospital::crearMenu() {
                 int idPaciente;
                 std::cout << "Ingrese tu ID: ";
                 std::cin >> idPaciente;
-                Paciente::consultarPaciente(idPaciente);
+                if (std::cin) {
+                    Paciente::consultarPaciente(idPaciente);
+                }
+                else {
+                    std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+                    std::cin.clear();
+                    std::cin.ignore();
+                }
                 break;
             }
             case 3: {
                 int idMedico;
                 std::cout << "Ingrese ID de tu medico: ";
                 std::cin >> idMedico;
-                Medico::consultarMedico(idMedico);
+                if (std::cin) {
+                    Medico::consultarMedico(idMedico);
+				}
+				else {
+					std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+					std::cin.clear();
+					std::cin.ignore();
+				}
                 break;
             }
             case 4: {
                 int idCita;
                 std::cout << "Ingrese ID de la cita: ";
                 std::cin >> idCita;
-                Cita::consultarCita(idCita);
+				if (std::cin) {
+					Cita::consultarCita(idCita);
+				}
+				else {
+					std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+					std::cin.clear();
+					std::cin.ignore();
+				}
                 break;
             }
             default:
@@ -175,39 +203,60 @@ void SistemaHospital::crearMenu() {
                     int idPaciente;
                     std::cout << "Ingrese ID del paciente: ";
                     std::cin >> idPaciente;
-                    Paciente::eliminarPaciente(idPaciente);
+					if (std::cin) {
+						Paciente::eliminarPaciente(idPaciente);
+					}
+					else {
+						std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+						std::cin.clear();
+						std::cin.ignore();
+					}
                     break;
                 }
                 case 3: {
                     int idPaciente;
                     std::cout << "Ingrese ID del paciente: ";
                     std::cin >> idPaciente;
-                    Paciente::consultarPaciente(idPaciente);
+					if (std::cin) {
+                        Paciente::consultarPaciente(idPaciente);
+					}
+                    else {
+                        std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+                        std::cin.clear();
+                        std::cin.ignore();
+                    }
                     break;
                 }
                 case 4: {
                     int idPaciente;
                     std::cout << "Ingrese ID del paciente: ";
                     std::cin >> idPaciente;
-                    std::cin.ignore();
+                    if (std::cin) {
+                        std::cin.ignore();
 
-                    auto paciente = std::find_if(pacientes.begin(), pacientes.end(), [idPaciente](const Paciente& p) {
-                        return p.getId() == idPaciente;
-                        });
+                        auto paciente = std::find_if(pacientes.begin(), pacientes.end(), [idPaciente](const Paciente& p) {
+                            return p.getId() == idPaciente;
+                            });
 
-                    if (paciente != pacientes.end()) {
-                        std::string diagnostico, tratamiento, enfermedadCronicaStr;
-                        std::cout << "Ingrese diagnostico: ";
-                        std::getline(std::cin, diagnostico);
-                        std::cout << "Ingrese tratamiento: ";
-                        std::getline(std::cin, tratamiento);
-                        std::cout << "Es una enfermedad Cronica? (solo responder Si o No): ";
-                        std::getline(std::cin, enfermedadCronicaStr);
-                        bool enfermedadCronica = (enfermedadCronicaStr == "Si");
-                        paciente->agregarRegistroHistorial(idPaciente, diagnostico, tratamiento, enfermedadCronica);
-                    }
+                        if (paciente != pacientes.end()) {
+                            std::string diagnostico, tratamiento, enfermedadCronicaStr;
+                            std::cout << "Ingrese diagnostico: ";
+                            std::getline(std::cin, diagnostico);
+                            std::cout << "Ingrese tratamiento: ";
+                            std::getline(std::cin, tratamiento);
+                            std::cout << "Es una enfermedad Cronica? (solo responder Si o No): ";
+                            std::getline(std::cin, enfermedadCronicaStr);
+                            bool enfermedadCronica = (enfermedadCronicaStr == "Si");
+                            paciente->agregarRegistroHistorial(idPaciente, diagnostico, tratamiento, enfermedadCronica);
+                        }
+                        else {
+                            std::cout << "Paciente no encontrado." << std::endl;
+                        }
+					}
                     else {
-                        std::cout << "Paciente no encontrado." << std::endl;
+                        std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+                        std::cin.clear();
+                        std::cin.ignore();
                     }
                     break;
                 }
@@ -233,15 +282,22 @@ void SistemaHospital::crearMenu() {
                     std::string especialidad;
                     std::cout << "Ingrese ID del medico: ";
                     std::cin >> idMedico;
-                    std::cin.ignore();
-                    std::cout << "Ingrese especialidad del medico: ";
-                    std::getline(std::cin, especialidad);
-                    for (auto& medico : medicos) {
-                        if (medico.getId() == idMedico) {
-                            medico.asignarEspecialidad(idMedico, especialidad);
-                            break;
+                    if (std::cin) {
+                        std::cin.ignore();
+                        std::cout << "Ingrese especialidad del medico: ";
+                        std::getline(std::cin, especialidad);
+                        for (auto& medico : medicos) {
+                            if (medico.getId() == idMedico) {
+                                medico.asignarEspecialidad(idMedico, especialidad);
+                                break;
+                            }
                         }
-                    }
+					}
+					else {
+						std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+						std::cin.clear();
+						std::cin.ignore();
+					}
                     break;
                 }
                 case 2: {
@@ -249,21 +305,35 @@ void SistemaHospital::crearMenu() {
                     bool disponibilidad;
                     std::cout << "Ingrese ID del medico: ";
                     std::cin >> idMedico;
-                    std::cout << "Ingrese disponibilidad del medico (1 para disponible, 0 para no disponible): ";
-                    std::cin >> disponibilidad;
-                    for (auto& medico : medicos) {
-                        if (medico.getId() == idMedico) {
-                            medico.cambiarDisponibilidad(idMedico, disponibilidad);
-                            break;
+					if (std::cin) {
+                        std::cout << "Ingrese disponibilidad del medico (1 para disponible, 0 para no disponible): ";
+                        std::cin >> disponibilidad;
+                        for (auto& medico : medicos) {
+                            if (medico.getId() == idMedico) {
+                                medico.cambiarDisponibilidad(idMedico, disponibilidad);
+                                break;
+                            }
                         }
-                    }
+					}
+					else {
+						std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+						std::cin.clear();
+						std::cin.ignore();
+					}
                     break;
                 }
                 case 3: {
                     int idMedico;
                     std::cout << "Ingrese ID del medico: ";
                     std::cin >> idMedico;
-                    Medico::consultarMedico(idMedico);
+					if (std::cin) {
+						Medico::consultarMedico(idMedico);
+					}
+					else {
+						std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+						std::cin.clear();
+						std::cin.ignore();
+					}
                     break;
                 }
                 case 4: {
@@ -297,10 +367,28 @@ void SistemaHospital::crearMenu() {
                     std::string fecha, prioridad;
                     std::cout << "Ingrese ID de la cita: ";
                     std::cin >> idCita;
+                    if (!std::cin) {
+                        std::cout << "ID de la cita incorrecto. Por favor ingrese un numero valido.\n";
+                        std::cin.clear();
+                        std::cin.ignore();
+                        break;
+                    }
                     std::cout << "Ingrese ID del paciente: ";
                     std::cin >> idPaciente;
+                    if (!std::cin) {
+                        std::cout << "ID del paciente incorrecto. Por favor ingrese un numero valido.\n";
+                        std::cin.clear();
+                        std::cin.ignore();
+                        break;
+                    }
                     std::cout << "Ingrese ID del medico: ";
                     std::cin >> idMedico;
+                    if (!std::cin) {
+                        std::cout << "ID del medico incorrecto. Por favor ingrese un numero valido.\n";
+                        std::cin.clear();
+                        std::cin.ignore();
+                        break;
+                    }
                     std::cin.ignore();
                     std::cout << "Ingrese fecha de la cita (YYYY-MM-DD HH:MM): ";
                     std::getline(std::cin, fecha);
@@ -321,21 +409,42 @@ void SistemaHospital::crearMenu() {
                     int idCita;
                     std::cout << "Ingrese ID de la cita: ";
                     std::cin >> idCita;
-                    Cita::cancelarCita(idCita);
+					if (std::cin) {
+						Cita::cancelarCita(idCita);
+					}
+					else {
+						std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+						std::cin.clear();
+						std::cin.ignore();
+					}
                     break;
                 }
                 case 3: {
                     int idCita;
                     std::cout << "Ingrese ID de la cita: ";
                     std::cin >> idCita;
-                    Cita::modificarCita(idCita);
+					if (std::cin) {
+						Cita::modificarCita(idCita);
+					}
+					else {
+						std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+						std::cin.clear();
+						std::cin.ignore();
+					}
                     break;
                 }
                 case 4: {
                     int idCita;
                     std::cout << "Ingrese ID de la cita: ";
                     std::cin >> idCita;
-                    Cita::consultarCita(idCita);
+					if (std::cin) {
+						Cita::consultarCita(idCita);
+					}
+					else {
+						std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+						std::cin.clear();
+						std::cin.ignore();
+					}
                     break;
                 }
                 case 5: {
