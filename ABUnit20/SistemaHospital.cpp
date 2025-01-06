@@ -542,5 +542,10 @@ void SistemaHospital::ejecutarSistema() {
     if (!pacientes || !medicos || !citas) {
         crearBaseDeDatos();
     }
+    else {
+        this->medicos = Medico::leerMedicosDesdeCSV("medicos.csv");
+        this->pacientes = Paciente::leerPacientesDesdeCSV("pacientes.csv");
+        this->citas = Cita::leerCitasDesdeCSV("citas.csv");
+    }
     crearMenu();
 }

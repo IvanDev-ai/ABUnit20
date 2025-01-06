@@ -132,9 +132,18 @@ void Paciente::modificarDatos(const std::string& nuevoNombre, const std::string&
 
 void Paciente::agregarPaciente(Paciente paciente) {
     std::vector<Paciente> pacientes = leerPacientesDesdeCSV("pacientes.csv");
+
+    // Verificar si el ID del paciente ya existe
+    for (const auto& p : pacientes) {
+        if (p.getId() == paciente.getId()) {
+            std::cout << "Error: Ya existe un paciente con el mismo ID.\n";
+            return;
+        }
+    }
     pacientes.push_back(paciente);
     escribirPacientesEnCSV("pacientes.csv", pacientes);
 }
+
 
 void Paciente::eliminarPaciente(int idPaciente) {
     std::vector<Paciente> pacientes = leerPacientesDesdeCSV("pacientes.csv");

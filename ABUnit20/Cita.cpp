@@ -171,6 +171,15 @@ void Cita::escribirCitasEnCSV(const std::string& nombreArchivo, const std::vecto
 
 void Cita::programarCita(const Cita& cita) {
     std::vector<Cita> citas = leerCitasDesdeCSV("citas.csv");
+
+    // Verificar si el ID de la cita ya existe
+    for (const auto& c : citas) {
+        if (c.getId() == cita.getId()) {
+            std::cout << "Error: Ya existe una cita con el mismo ID.\n";
+            return;
+        }
+    }
+
     citas.push_back(cita);
     escribirCitasEnCSV("citas.csv", citas);
 }
