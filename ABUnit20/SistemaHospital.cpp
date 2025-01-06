@@ -1,8 +1,7 @@
 #include "SistemaHospital.h"
 namespace fs = std::filesystem;
-SistemaHospital::SistemaHospital() {
-    crearBaseDeDatos();
-}
+SistemaHospital::SistemaHospital() {}
+
 void SistemaHospital::crearBaseDeDatos() {
     HistorialClinico registro1("Resfriado", "Descanso y liquidos", true);
     HistorialClinico registro2("Gripe", "Antivirales", false);
@@ -536,6 +535,12 @@ void SistemaHospital::realizarCopiaBBDD() {
 
 
 void SistemaHospital::ejecutarSistema() {
-    crearBaseDeDatos();
+    std::ifstream pacientes("pacientes.csv");
+    std::ifstream medicos("medicos.csv");
+    std::ifstream citas("citas.csv");
+
+    if (!pacientes || !medicos || !citas) {
+        crearBaseDeDatos();
+    }
     crearMenu();
 }
