@@ -49,11 +49,11 @@ Este proyecto es un sistema de gestión hospitalaria diseñado para facilitar la
    ```bash
    cmake ..
    ```
-4.Compila el proyecto:
+4. Compila el proyecto:
    ```bash
    cmake --build .
    ```
-5.Ejecuta el programa:
+5. Ejecuta el programa:
    ```bash
    ./ABUnit20
    ```
