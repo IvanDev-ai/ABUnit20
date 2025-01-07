@@ -37,7 +37,7 @@ Este proyecto es un sistema de gestión hospitalaria diseñado para facilitar la
 ## Instalación
 1. Clona el repositorio:
    ```bash
-   git clone https://github.com/usuario/sistema-gestion-hospital.git
+   git clone https://github.com/IvanDev-ai/ABUnit20.git
    cd sistema-gestion-hospital
    ```
 2. Crea un directorio para la compilación:
