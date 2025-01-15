@@ -54,6 +54,20 @@ void Medico::escribirMedicosEnCSV(const std::string& nombreArchivo, const std::v
     }
 }
 
+void Medico::agregarMedico(const Medico& medico)
+{
+	std::vector<Medico> medicos = leerMedicosDesdeCSV("medicos.csv");
+	medicos.push_back(medico);
+	escribirMedicosEnCSV("medicos.csv", medicos);
+}
+
+void Medico::eliminarMedico(int idMedico) {
+	std::vector<Medico> medicos = leerMedicosDesdeCSV("medicos.csv");
+	medicos.erase(std::remove_if(medicos.begin(), medicos.end(), [idMedico](const Medico& medico) {
+		return medico.getId() == idMedico;
+		}), medicos.end());
+	escribirMedicosEnCSV("medicos.csv", medicos);
+}
 void Medico::asignarEspecialidad(int idMedico, const std::string& nuevaEspecialidad) {
     std::vector<Medico> medicos = leerMedicosDesdeCSV("medicos.csv");
 

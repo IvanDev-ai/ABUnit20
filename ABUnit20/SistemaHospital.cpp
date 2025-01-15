@@ -306,6 +306,8 @@ void SistemaHospital::crearMenu() {
                 std::cout << "2. Cambiar disponibilidad de medico" << std::endl;
                 std::cout << "3. Consultar medico" << std::endl;
                 std::cout << "4. Listar medicos por especialidad" << std::endl;
+                std::cout << "5. Dar de alta Medico" << std::endl;
+                std::cout << "6. Dar de baja Medico" << std::endl;
                 std::cout << "Seleccione una opcion: ";
                 std::cin >> opcionMedico;
 
@@ -375,6 +377,55 @@ void SistemaHospital::crearMenu() {
                     std::cin.ignore();
                     std::getline(std::cin, especialidad);
                     Medico::listarMedicosPorEspecialidad(especialidad);
+                    break;
+                }
+                case 5: {
+					std::string nombre, especialidad;
+					int id;
+					bool disponibilidad;
+					std::cout << "Ingrese nombre del medico: ";
+					std::cin.ignore();
+					std::getline(std::cin, nombre);
+					std::cout << "Ingrese ID del medico: ";
+					std::cin >> id;
+					if (std::cin) {
+						std::cin.ignore();
+						std::cout << "Ingrese especialidad del medico: ";
+						std::getline(std::cin, especialidad);
+						std::cout << "Ingrese disponibilidad del medico (1 para disponible, 0 para no disponible): ";
+						std::cin >> disponibilidad;
+						Medico nuevoMedico(nombre, id, especialidad, disponibilidad);
+						Medico::agregarMedico(nuevoMedico);
+					}
+					else {
+						std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+						std::cin.clear();
+						std::cin.ignore();
+					}
+					break;
+                }
+                case 6: {
+                    int idMedico;
+                    std::cout << "Ingrese ID del medico: ";
+                    std::cin >> idMedico;
+                    if (std::cin) {
+						for (auto& c : citas) {
+							if (c.getMedico().getId() == idMedico) {
+                                std::cout << "Medico con citas pendientes, no se puede eliminar.\n";
+                                break;
+							}
+                            else {
+                                Medico::eliminarMedico(idMedico);
+                                std::cout << "Medico Eliminado.\n";
+                                break;
+                            }
+						}
+                    }
+                    else {
+                        std::cout << "ID incorrecto. Por favor ingrese un numero valido.\n";
+                        std::cin.clear();
+                        std::cin.ignore();
+                    }
                     break;
                 }
                 default:

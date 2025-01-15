@@ -33,7 +33,8 @@ public:
 
     static std::vector<Medico> leerMedicosDesdeCSV(const std::string& nombreArchivo);
     static void escribirMedicosEnCSV(const std::string& nombreArchivo, const std::vector<Medico>& medicos);
-
+	static void agregarMedico(const Medico& medico);
+	static void eliminarMedico(int idMedico);
     static void asignarEspecialidad(int idMedico, const std::string& nuevaEspecialidad);
     static void cambiarDisponibilidad(int idMedico, bool nuevaDisponibilidad);
     static void listarMedicosPorEspecialidad(const std::string& especialidad);
