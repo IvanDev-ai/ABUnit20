@@ -127,9 +127,7 @@ void SistemaHospital::crearMenu() {
                         if (paciente.getId() == idPaciente) {
 							for (auto& c : citas) {
 								if (c.getPaciente().getId() == idPaciente) {
-                                    std::cout << c.getPaciente().getNombre();
 									c.cambiarNombrePaciente(nuevoNombre);
-                                    std::cout << c.getPaciente().getNombre();
 								}
 							}
                             paciente.modificarDatos(nuevoNombre, nuevaFechaIngreso);
