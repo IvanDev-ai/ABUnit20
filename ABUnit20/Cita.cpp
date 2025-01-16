@@ -4,92 +4,9 @@ Cita::Cita(int id, Paciente paciente, Medico medico, const std::string& fecha, c
     : id(id), paciente(paciente), medico(medico), fecha(fecha), prioridad(prioridad) {
 }
 
-std::vector<Paciente> leerPacientesDesdeCSV(const std::string& nombreArchivo)
-{
-    std::vector<Paciente> pacientes;
-    std::ifstream archivo(nombreArchivo);
-    std::string linea, nombre, fechaIngreso, historialClinicoStr;
-    int id;
-
-    if (archivo.is_open()) {
-        std::getline(archivo, linea);
-
-        while (std::getline(archivo, linea)) {
-            std::stringstream ss(linea);
-            std::getline(ss, nombre, ',');
-
-            ss >> id;
-            ss.ignore(1, ',');
-
-            std::getline(ss, fechaIngreso, ',');
-
-            std::replace(fechaIngreso.begin(), fechaIngreso.end(), ',', '-');
-
-            std::getline(ss, historialClinicoStr);
-
-            std::vector<HistorialClinico> historial;
-            std::stringstream historialStream(historialClinicoStr);
-            std::string registro;
-
-            while (std::getline(historialStream, registro, ';')) {
-                if (registro.empty()) {
-                    continue;
-                }
-                size_t pos = registro.find(": ");
-                if (pos != std::string::npos) {
-                    std::string enfermedad = registro.substr(0, pos);
-                    std::string tratamiento = registro.substr(pos + 2);
-                    std::string enfermedadCronicaStr = registro.substr(pos + 3);
-                    bool enfermedadCronica = (enfermedadCronicaStr == "true");
-                    historial.push_back(HistorialClinico(enfermedad, tratamiento, enfermedadCronica));
-                }
-            }
-
-            Paciente paciente(nombre, id, fechaIngreso, historial);
-            pacientes.push_back(paciente);
-        }
-        archivo.close();
-    }
-    else {
-        std::cerr << "No se pudo abrir el archivo " << nombreArchivo << std::endl;
-    }
-    return pacientes;
-}
-
-std::vector<Medico> leerMedicosDesdeCSV(const std::string& nombreArchivo) {
-    std::vector<Medico> medicos;
-    std::ifstream archivo(nombreArchivo);
-    std::string linea, nombre, especialidad, disponibilidadStr;
-    int id;
-    bool disponibilidad;
-
-    if (archivo.is_open()) {
-        std::getline(archivo, linea);
-
-        while (std::getline(archivo, linea)) {
-            std::stringstream ss(linea);
-            ss >> id;
-            ss.ignore(1, ',');
-            std::getline(ss, nombre, ',');
-            std::getline(ss, especialidad, ',');
-            std::getline(ss, disponibilidadStr);
-
-            disponibilidad = (disponibilidadStr == "Si");
-
-            Medico medico(nombre, id, especialidad, disponibilidad);
-            medicos.push_back(medico);
-        }
-        archivo.close();
-    }
-    else {
-        std::cerr << "No se pudo abrir el archivo " << nombreArchivo << std::endl;
-    }
-    return medicos;
-}
-
 // Buscar un paciente por nombre
 Paciente buscarPaciente(const std::string nombrePaciente) {
-    std::vector<Paciente> pacientes = leerPacientesDesdeCSV("pacientes.csv");
+    std::vector<Paciente> pacientes = Paciente::leerPacientesDesdeCSV("pacientes.csv");
 
     for (auto& paciente : pacientes) {
         if (paciente.getNombre() == nombrePaciente) {
@@ -102,7 +19,7 @@ Paciente buscarPaciente(const std::string nombrePaciente) {
 
 // Buscar un médico por nombre
 Medico buscarMedico(const std::string nombreMedico) {
-    std::vector<Medico> medicos = leerMedicosDesdeCSV("medicos.csv");
+    std::vector<Medico> medicos = Medico::leerMedicosDesdeCSV("medicos.csv");
 
     for (auto& medico : medicos) {
         if (medico.getNombre() == nombreMedico) {
@@ -201,8 +118,8 @@ void Cita::cancelarCita(int idCita) {
 
 void Cita::modificarCita(int idCita) {
     std::vector<Cita> citas = leerCitasDesdeCSV("citas.csv");
-    std::vector<Paciente> pacientes = leerPacientesDesdeCSV("pacientes.csv");
-    std::vector<Medico> medicos = leerMedicosDesdeCSV("medicos.csv");
+    std::vector<Paciente> pacientes = Paciente::leerPacientesDesdeCSV("pacientes.csv");
+    std::vector<Medico> medicos = Medico::leerMedicosDesdeCSV("medicos.csv");
 
     auto it = std::find_if(citas.begin(), citas.end(), [idCita](const Cita& cita) {
         return cita.getId() == idCita;
